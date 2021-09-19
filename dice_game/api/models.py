@@ -19,7 +19,7 @@ class User(models.Model):
             return False
 
     def validate_password(self, password):
-        user = self.objects.filter(username=self.username)
+        user = User.objects.filter(username=self.username)
         if (not user) or (user[0].password != password):
             return False
         else:
