@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import { render } from "react-dom";
 
 
 export default function App(props) {
     return (
-        <h1>---In Development---</h1>
+        <div className="center main-background"/>
     );
 }
 

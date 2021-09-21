@@ -1,0 +1,29 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+.main-background {
+  background: url("https://c.pxhere.com/photos/fe/25/cube_play_random_luck_points_numbers_eyes_magic_cube_craps-1282150.jpg!d") no-repeat center center fixed;
+  height: 100%;
+  width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
