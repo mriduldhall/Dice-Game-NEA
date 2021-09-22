@@ -1,4 +1,6 @@
 import React from "react";
+import RegisterPage from "./RegisterPage";
+import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
 
 
@@ -13,7 +15,7 @@ export default function HomePage(props) {
     function renderHomePage() {
         return (
             <div className={"center"}>
-                <Card style={{backgroundColor: "darkgray", padding:10}}>
+                <Card style={{backgroundColor: "#442424", padding:10}}>
                     <Grid container align={"center"}>
                         <Grid item xs={12} align={"center"}>
                             <CherryRedTextTypography variant={"h3"} compact={"h3"}>
@@ -28,7 +30,7 @@ export default function HomePage(props) {
                                 <Button color={"default"}>
                                     Info
                                 </Button>
-                                <Button color={"secondary"}>
+                                <Button color={"secondary"} to={"/register"} component={Link}>
                                     Register
                                 </Button>
                             </ButtonGroup>
@@ -40,6 +42,13 @@ export default function HomePage(props) {
     }
 
     return (
-        renderHomePage()
+        <Router>
+            <Switch>
+                <Route exact path='/' render={() => {
+                    return renderHomePage()
+                }}/>
+                <Route path='/register' component={RegisterPage}/>
+            </Switch>
+        </Router>
     );
 }
