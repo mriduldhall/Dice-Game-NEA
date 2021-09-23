@@ -1,5 +1,6 @@
 import React from "react";
 import RegisterPage from "./RegisterPage";
+import LoginPage from "./LoginPage";
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
 
@@ -24,7 +25,7 @@ export default function HomePage(props) {
                         </Grid>
                         <Grid item xs={12} align={"center"}>
                             <ButtonGroup disableElevation variant={"contained"} color={"primary"}>
-                                <Button color={"primary"}>
+                                <Button color={"primary"} to={"/login"} component={Link}>
                                     Login
                                 </Button>
                                 <Button color={"default"}>
@@ -48,6 +49,7 @@ export default function HomePage(props) {
                     return renderHomePage()
                 }}/>
                 <Route path='/register' component={RegisterPage}/>
+                <Route path='/login' component={LoginPage}/>
             </Switch>
         </Router>
     );

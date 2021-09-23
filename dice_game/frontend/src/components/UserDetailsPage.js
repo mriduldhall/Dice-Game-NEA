@@ -72,6 +72,52 @@ export default function UserDetailsPage(props) {
         );
     }
 
+    function handleLoginButtonPressed() {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            })
+        };
+        fetch('/api/login', requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    props.history.push('/');
+                } else {
+                    setErrorMsg("Username and/or Password Incorrect!");
+                }
+            })
+    }
+
+    function renderLoginButtons() {
+        return (
+            <Grid container spacing={1}>
+                <Grid item xs={12} align={"center"}>
+                    <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        disabled={!username || !password}
+                        onClick={handleLoginButtonPressed}
+                    >
+                        {props.buttonText}
+                    </Button>
+                </Grid>
+                <Grid item xs={12} align={"center"}>
+                    <Button
+                        color={"secondary"}
+                        variant={"contained"}
+                        to={"/"}
+                        component={Link}
+                    >
+                        Back
+                    </Button>
+                </Grid>
+            </Grid>
+        );
+    }
+
     function renderUsernameField() {
         return (
             <Grid item xs={12} align={"center"}>
@@ -135,14 +181,17 @@ export default function UserDetailsPage(props) {
                                 {props.title}
                             </CherryRedTextTypography>
                         </Grid>
-                        {props.mode === "register" &&
+                        {(props.mode === "register" || props.mode === "login") &&
                             renderUsernameField()
                         }
-                        {props.mode === "register" &&
+                        {(props.mode === "register" || props.mode === "login") &&
                             renderPasswordField()
                         }
                         {props.mode === "register" &&
                             renderRegisterButtons()
+                        }
+                        {props.mode === "login" &&
+                            renderLoginButtons()
                         }
                     </Grid>
                 </Card>
