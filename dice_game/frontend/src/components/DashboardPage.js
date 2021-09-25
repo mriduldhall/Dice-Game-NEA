@@ -1,8 +1,4 @@
 import React from "react";
-import RegisterPage from "./RegisterPage";
-import LoginPage from "./LoginPage";
-import DashboardPage from "./DashboardPage";
-import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
 
 
@@ -13,8 +9,8 @@ const CherryRedTextTypography = withStyles({
 })(Typography);
 
 
-export default function HomePage(props) {
-    function renderHomePage() {
+export default function DashboardPage(props) {
+    function renderDashboardPage() {
         return (
             <div className={"center"}>
                 <Card style={{backgroundColor: "#442424", padding:10}}>
@@ -26,14 +22,17 @@ export default function HomePage(props) {
                         </Grid>
                         <Grid item xs={12} align={"center"}>
                             <ButtonGroup disableElevation variant={"contained"} color={"primary"}>
-                                <Button color={"primary"} to={"/login"} component={Link}>
-                                    Login
+                                <Button color={"primary"}>
+                                    Start Game
                                 </Button>
                                 <Button color={"default"}>
                                     Info
                                 </Button>
-                                <Button color={"secondary"} to={"/register"} component={Link}>
-                                    Register
+                                <Button color={"default"}>
+                                    Leaderboard
+                                </Button>
+                                <Button color={"secondary"}>
+                                    Logout
                                 </Button>
                             </ButtonGroup>
                         </Grid>
@@ -44,15 +43,6 @@ export default function HomePage(props) {
     }
 
     return (
-        <Router>
-            <Switch>
-                <Route exact path='/' render={() => {
-                    return renderHomePage()
-                }}/>
-                <Route path='/register' component={RegisterPage}/>
-                <Route path='/login' component={LoginPage}/>
-                <Route path='/dashboard' component={DashboardPage}/>
-            </Switch>
-        </Router>
+        renderDashboardPage()
     );
 }

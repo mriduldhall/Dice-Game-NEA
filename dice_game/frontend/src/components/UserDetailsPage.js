@@ -40,7 +40,7 @@ export default function UserDetailsPage(props) {
         fetch('/api/register', requestOptions)
             .then((response) => {
                 if (response.ok) {
-                    history.push('/');
+                    history.push('/dashboard');
                 } else {
                     setErrorMsg("Username Already In Use!");
                 }
@@ -86,7 +86,7 @@ export default function UserDetailsPage(props) {
         fetch('/api/login', requestOptions)
             .then((response) => {
                 if (response.ok) {
-                    history.push('/');
+                    history.push('/dashboard');
                 } else {
                     setErrorMsg("Username and/or Password Incorrect!");
                 }
