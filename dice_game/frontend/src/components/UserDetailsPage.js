@@ -4,6 +4,7 @@ import Lock from "@material-ui/icons/Lock";
 import { Link } from "react-router-dom";
 import {Box, Grid, Typography, FormControl, Button, Collapse, TextField, Card, withStyles} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import { useHistory } from 'react-router-dom';
 
 
 const CherryRedTextTypography = withStyles({
@@ -17,6 +18,7 @@ export default function UserDetailsPage(props) {
     let [username, setUsername] = useState(props.username);
     let [password, setPassword] = useState(props.password);
     let [errorMsg, setErrorMsg] = useState("");
+    const history = useHistory();
 
     function handleUsernameChange(e) {
         setUsername(e.target.value);
@@ -38,7 +40,7 @@ export default function UserDetailsPage(props) {
         fetch('/api/register', requestOptions)
             .then((response) => {
                 if (response.ok) {
-                    props.history.push('/');
+                    history.push('/');
                 } else {
                     setErrorMsg("Username Already In Use!");
                 }
@@ -84,7 +86,7 @@ export default function UserDetailsPage(props) {
         fetch('/api/login', requestOptions)
             .then((response) => {
                 if (response.ok) {
-                    props.history.push('/');
+                    history.push('/');
                 } else {
                     setErrorMsg("Username and/or Password Incorrect!");
                 }
