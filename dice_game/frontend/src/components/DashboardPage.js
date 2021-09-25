@@ -1,5 +1,6 @@
 import React from "react";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
+import { useHistory } from 'react-router-dom';
 
 
 const CherryRedTextTypography = withStyles({
@@ -10,6 +11,19 @@ const CherryRedTextTypography = withStyles({
 
 
 export default function DashboardPage(props) {
+    const history = useHistory();
+
+
+    function handleLogoutButtonClicked() {
+        fetch('api/logout')
+            .then((response) => {
+                if (response.ok) {
+                    history.push('/')
+                }
+            })
+    }
+
+
     function renderDashboardPage() {
         return (
             <div className={"center"}>
@@ -31,7 +45,7 @@ export default function DashboardPage(props) {
                                 <Button color={"default"}>
                                     Leaderboard
                                 </Button>
-                                <Button color={"secondary"}>
+                                <Button color={"secondary"} onClick={handleLogoutButtonClicked}>
                                     Logout
                                 </Button>
                             </ButtonGroup>

@@ -42,3 +42,12 @@ class LoginView(APIView):
                     return Response({'Message': 'Logged in'}, status=status.HTTP_200_OK)
             return Response({'Unauthorised': 'Incorrect Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({'Bad Request': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    def get(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        if 'username' in self.request.session:
+            del self.request.session['username']
+        return Response({'Message': 'Logged out'}, status=status.HTTP_200_OK)
