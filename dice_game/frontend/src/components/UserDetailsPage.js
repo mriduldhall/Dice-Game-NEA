@@ -20,6 +20,15 @@ export default function UserDetailsPage(props) {
     let [errorMsg, setErrorMsg] = useState("");
     const history = useHistory();
 
+    function validateAccess() {
+        fetch('api/validate-access')
+            .then((response) => {
+                if (response.ok) {
+                    history.push('/dashboard')
+                }
+            })
+    }
+
     function handleUsernameChange(e) {
         setUsername(e.target.value);
     }
@@ -164,6 +173,10 @@ export default function UserDetailsPage(props) {
     }
 
     function renderPage() {
+        if (props.mode === "login") {
+            validateAccess();
+        }
+
         return(
             <div className={"center"}>
                 <Card style={{backgroundColor: "#442424", padding:10}}>
