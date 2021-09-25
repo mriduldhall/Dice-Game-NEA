@@ -51,3 +51,13 @@ class LogoutView(APIView):
         if 'username' in self.request.session:
             del self.request.session['username']
         return Response({'Message': 'Logged out'}, status=status.HTTP_200_OK)
+
+
+class ValidateAccess(APIView):
+    def get(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        if 'username' in self.request.session:
+            return Response({'Message': 'Access'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'Unauthorised': 'No Access'}, status=status.HTTP_401_UNAUTHORIZED)

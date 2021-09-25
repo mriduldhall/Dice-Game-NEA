@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
 
@@ -12,6 +12,26 @@ const CherryRedTextTypography = withStyles({
 
 export default function DashboardPage(props) {
     const history = useHistory();
+
+
+    useEffect(() => {
+        validateAccess();
+        let interval;
+        interval = setInterval(validateAccess, 300000);
+        return function cleanup() {
+            clearInterval(interval);
+        };
+    });
+
+
+    function validateAccess() {
+        fetch('api/validate-access')
+            .then((response) => {
+                if (!response.ok) {
+                    history.push('/')
+                }
+            })
+    }
 
 
     function handleLogoutButtonClicked() {
