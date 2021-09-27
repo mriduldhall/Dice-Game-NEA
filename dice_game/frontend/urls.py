@@ -6,4 +6,5 @@ urlpatterns = [
     path('register', index),
     path('login', index),
     path('dashboard', index),
+    path('game', index),
 ]

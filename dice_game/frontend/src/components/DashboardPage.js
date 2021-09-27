@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 
 
@@ -56,7 +57,7 @@ export default function DashboardPage(props) {
                         </Grid>
                         <Grid item xs={12} align={"center"}>
                             <ButtonGroup disableElevation variant={"contained"} color={"primary"}>
-                                <Button color={"primary"}>
+                                <Button color={"primary"} to={'/game'} component={Link}>
                                     Start Game
                                 </Button>
                                 <Button color={"default"}>

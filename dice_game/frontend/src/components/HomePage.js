@@ -2,6 +2,7 @@ import React from "react";
 import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
 import DashboardPage from "./DashboardPage";
+import GamePage from "./GamePage";
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
 
@@ -52,6 +53,7 @@ export default function HomePage(props) {
                 <Route path='/register' component={RegisterPage}/>
                 <Route path='/login' component={LoginPage}/>
                 <Route path='/dashboard' component={DashboardPage}/>
+                <Route path='/game' component={GamePage}/>
             </Switch>
         </Router>
     );
