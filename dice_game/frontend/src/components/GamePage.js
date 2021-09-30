@@ -1,7 +1,8 @@
 import React, {useState} from "react";
+import {Link} from "react-router-dom";
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import {Grid, Typography, Card, withStyles} from "@material-ui/core";
+import {Grid, Typography, Button, Card, withStyles} from "@material-ui/core";
 
 
 const CherryRedTextTypography = withStyles({
@@ -29,6 +30,16 @@ export default function GamePage(props) {
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Paused
                     </CherryRedTextTypography>
+                    <Grid item xs={12} align={"center"}>
+                    <Button
+                        color={"secondary"}
+                        variant={"contained"}
+                        to={"/dashboard"}
+                        component={Link}
+                    >
+                        Exit Game
+                    </Button>
+                </Grid>
                 </Card>
             </Grid>
         );
