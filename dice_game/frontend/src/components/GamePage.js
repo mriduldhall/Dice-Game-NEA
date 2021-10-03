@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import {Grid, Typography, Button, Card, withStyles} from "@material-ui/core";
@@ -14,6 +14,22 @@ const CherryRedTextTypography = withStyles({
 
 export default function GamePage(props) {
     let [pauseStatus, setPauseStatus] = useState(false)
+    let [gameSocket, setGameSocket] = useState(null)
+    const history = useHistory();
+
+    useEffect(
+        setupWebsocket,
+        []
+    )
+
+    function setupWebsocket() {
+        setGameSocket(new WebSocket('ws://' + window.location.host + '/ws/game'));
+    }
+
+    function handleExitButtonClicked() {
+        gameSocket.close();
+        history.push('/dashboard');
+    }
 
     function renderPauseMenu() {
         return (
@@ -34,8 +50,7 @@ export default function GamePage(props) {
                     <Button
                         color={"secondary"}
                         variant={"contained"}
-                        to={"/dashboard"}
-                        component={Link}
+                        onClick={handleExitButtonClicked}
                     >
                         Exit Game
                     </Button>

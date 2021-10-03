@@ -152,7 +152,9 @@ CHANNEL_LAYERS = {
             'PASSWORD': os.getenv("db_password"),
             'HOST': os.getenv("db_host"),
             'PORT': os.getenv("db_port"),
-            'symmetric_encryption_keys': [SECRET_KEY],
+            'CONFIG': {
+                'symmetric_encryption_keys': [SECRET_KEY],
+            }
         },
     },
 }
