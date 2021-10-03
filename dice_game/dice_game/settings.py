@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
+    'channels_postgres',
     'api.apps.ApiConfig',
     'frontend.apps.FrontendConfig',
 ]
@@ -88,7 +90,15 @@ DATABASES = {
         'PASSWORD': os.getenv("db_password"),
         'HOST': os.getenv("db_host"),
         'PORT': os.getenv("db_port"),
-    }
+    },
+    'channels_postgres': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv("db_name"),
+        'USER': os.getenv("db_user"),
+        'PASSWORD': os.getenv("db_password"),
+        'HOST': os.getenv("db_host"),
+        'PORT': os.getenv("db_port"),
+    },
 }
 
 
@@ -129,3 +139,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Channels
+ASGI_APPLICATION = 'dice_game.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_postgres.core.PostgresChannelLayer',
+        'CONFIG': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.getenv("db_name"),
+            'USER': os.getenv("db_user"),
+            'PASSWORD': os.getenv("db_password"),
+            'HOST': os.getenv("db_host"),
+            'PORT': os.getenv("db_port"),
+            'symmetric_encryption_keys': [SECRET_KEY],
+        },
+    },
+}
