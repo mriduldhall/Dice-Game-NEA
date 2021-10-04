@@ -18,9 +18,25 @@ export default function GamePage(props) {
     const history = useHistory();
 
     useEffect(
-        setupWebsocket,
+        () => {
+            setupWebsocket();
+            let interval;
+            interval = setInterval(validateAccess, 5000);
+            return function cleanup() {
+                clearInterval(interval);
+            };
+        },
         []
     )
+
+    function validateAccess() {
+        fetch('api/validate-access')
+            .then((response) => {
+                if (!response.ok) {
+                    history.push('/')
+                }
+            })
+    }
 
     function setupWebsocket() {
         setGameSocket(new WebSocket('ws://' + window.location.host + '/ws/game'));
