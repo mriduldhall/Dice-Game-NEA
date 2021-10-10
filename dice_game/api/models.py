@@ -24,3 +24,12 @@ class User(models.Model):
             return False
         else:
             return True
+
+
+class Game(models.Model):
+    id = models.AutoField(primary_key=True)
+    player_one = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="player_two")
+    player_one_score = models.IntegerField(default=0)
+    player_two = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    player_two_score = models.IntegerField(default=0)
+    game_end = models.DateTimeField(default=None, null=True)

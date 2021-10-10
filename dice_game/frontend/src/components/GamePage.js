@@ -15,6 +15,7 @@ const CherryRedTextTypography = withStyles({
 export default function GamePage(props) {
     let [pauseStatus, setPauseStatus] = useState(false)
     let [gameSocket, setGameSocket] = useState(null)
+    let [connecting, setConnecting] = useState(true)
     const history = useHistory();
 
     useEffect(
@@ -38,8 +39,20 @@ export default function GamePage(props) {
             })
     }
 
+    function startGame() {
+        setConnecting(false);
+    }
+
     function setupWebsocket() {
-        setGameSocket(new WebSocket('ws://' + window.location.host + '/ws/game'));
+        let webSocket = new WebSocket('ws://' + window.location.host + '/ws/game');
+        const messageActions = {
+            "/start": startGame
+        };
+        webSocket.onmessage = (e) => {
+            const message = JSON.parse(e.data);
+            messageActions[message.action]();
+        };
+        setGameSocket(webSocket);
     }
 
     function handleExitButtonClicked() {
@@ -89,6 +102,18 @@ export default function GamePage(props) {
         );
     }
 
+    function renderConnectingPage() {
+        return (
+            <div className={"center game-background"}>
+                <Card className={"center"} style={{backgroundColor: "#442424", padding:10}}>
+                    <CherryRedTextTypography variant={"h3"} compact={"h3"}>
+                        Awaiting Second Player...
+                    </CherryRedTextTypography>
+                </Card>
+            </div>
+        );
+    }
+
     function renderGamePage() {
         return (
             <div className={"center game-background"}>
@@ -102,6 +127,8 @@ export default function GamePage(props) {
     }
 
     return (
-        renderGamePage()
+        connecting === true ?
+            renderConnectingPage() :
+            renderGamePage()
     );
 }
