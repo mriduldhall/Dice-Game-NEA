@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import {Grid, Typography, Button, Card, withStyles} from "@material-ui/core";
+import Dice from "./Dice";
 
 
 const CherryRedTextTypography = withStyles({
@@ -16,6 +17,9 @@ export default function GamePage(props) {
     let [pauseStatus, setPauseStatus] = useState(false)
     let [gameSocket, setGameSocket] = useState(null)
     let [connecting, setConnecting] = useState(true)
+    let [playerOneDiceValue, setPlayerOneDiceValue] = useState([6, 6]);
+    let [playerTwoDiceValue, setPlayerTwoDiceValue] = useState([6, 6]);
+    let [playerNumber, setPlayerNumber] = useState(null);
     const history = useHistory();
 
     useEffect(
@@ -39,8 +43,9 @@ export default function GamePage(props) {
             })
     }
 
-    function startGame() {
+    function startGame(data) {
         setConnecting(false);
+        setPlayerNumber(data.player_number);
     }
 
     function setupWebsocket() {
@@ -50,9 +55,15 @@ export default function GamePage(props) {
         };
         webSocket.onmessage = (e) => {
             const message = JSON.parse(e.data);
-            messageActions[message.action]();
+            messageActions[message.action](message.additional_data);
         };
         setGameSocket(webSocket);
+    }
+
+    function handleDiceRoll() {
+        gameSocket.send(JSON.stringify({
+            'action': '/roll'
+        }));
     }
 
     function handleExitButtonClicked() {
@@ -122,6 +133,32 @@ export default function GamePage(props) {
                         renderPauseButton():
                         renderPauseMenu()
                 }
+                <div className={"center-left"}>
+                    <Dice
+                        values={playerOneDiceValue}
+                    />
+                    <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        onClick={handleDiceRoll}
+                        disabled={(playerNumber !== 1)}
+                    >
+                        Roll Die
+                    </Button>
+                </div>
+                <div className={"center-right"}>
+                    <Dice
+                        values={playerTwoDiceValue}
+                    />
+                    <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        onClick={handleDiceRoll}
+                        disabled={(playerNumber === 1)}
+                    >
+                        Roll Die
+                    </Button>
+                </div>
             </div>
         );
     }

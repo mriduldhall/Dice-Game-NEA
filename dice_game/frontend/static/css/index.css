@@ -48,3 +48,19 @@ body {
 .top-right {
   float: right;
 }
+
+.center-left {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translate(-50%, -50%);
+  max-width: 128px;
+}
+
+.center-right {
+  position: absolute;
+  top: 50%;
+  left: 90%;
+  transform: translate(-50%, -50%);
+  max-width: 128px;
+}

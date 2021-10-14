@@ -9,6 +9,9 @@ class GameConsumer(WebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
         self.game_name = ""
+        self.action_list = {
+            "/roll": self.roll_die,
+        }
 
     def connect(self):
         if "username" not in self.scope["session"]:
@@ -19,6 +22,11 @@ class GameConsumer(WebsocketConsumer):
         else:
             self.create_new_game()
         self.accept()
+
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        action = text_data_json['action']
+        self.action_list[action]()
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -36,6 +44,7 @@ class GameConsumer(WebsocketConsumer):
         game = Game.objects.create(
             player_one=User.objects.get(username=self.scope["session"]["username"])
         )
+        self.scope["session"]["player_number"] = 1
         self.game_name = "game_" + str(game.id)
         async_to_sync(self.channel_layer.group_add)(
             self.game_name,
@@ -45,6 +54,7 @@ class GameConsumer(WebsocketConsumer):
     def connect_to_existing_game(self, game):
         game.player_two = User.objects.get(username=self.scope["session"]["username"])
         game.save(update_fields=["player_two"])
+        self.scope["session"]["player_number"] = 2
         self.game_name = "game_" + str(game.id)
         async_to_sync(self.channel_layer.group_add)(
             self.game_name,
@@ -55,11 +65,21 @@ class GameConsumer(WebsocketConsumer):
             {
                 'type': 'send_signal',
                 'action': '/start',
+                'additional_data': {
+
+                }
             }
         )
 
     def send_signal(self, event):
         action = event["action"]
+        additional_data = event["additional_data"]
+        additional_data.update({'player_number': self.scope["session"]["player_number"]})
         self.send(text_data=json.dumps({
-            'action': action
+            'action': action,
+            'additional_data': additional_data,
         }))
+
+
+    def roll_die(self):
+        print("Rolling")
