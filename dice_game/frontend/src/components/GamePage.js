@@ -48,22 +48,23 @@ export default function GamePage(props) {
         setPlayerNumber(data.player_number);
     }
 
+    function rollDie(data) {
+        (data.dice_roller === 1) ?
+            setPlayerOneDiceValue(data.dice_values) :
+            setPlayerTwoDiceValue(data.dice_values)
+    }
+
     function setupWebsocket() {
         let webSocket = new WebSocket('ws://' + window.location.host + '/ws/game');
         const messageActions = {
-            "/start": startGame
+            "/start": startGame,
+            "/rolled": rollDie,
         };
         webSocket.onmessage = (e) => {
             const message = JSON.parse(e.data);
             messageActions[message.action](message.additional_data);
         };
         setGameSocket(webSocket);
-    }
-
-    function handleDiceRoll() {
-        gameSocket.send(JSON.stringify({
-            'action': '/roll'
-        }));
     }
 
     function handleExitButtonClicked() {
@@ -135,12 +136,19 @@ export default function GamePage(props) {
                 }
                 <div className={"center-left"}>
                     <Dice
-                        values={playerOneDiceValue}
+                        diceValues={playerOneDiceValue}
                     />
                     <Button
                         color={"primary"}
                         variant={"contained"}
-                        onClick={handleDiceRoll}
+                        onClick={() => {
+                            gameSocket.send(JSON.stringify({
+                                'action': '/roll',
+                                'data': {
+                                    'player_number': 1
+                                }
+                            }));
+                        }}
                         disabled={(playerNumber !== 1)}
                     >
                         Roll Die
@@ -148,12 +156,19 @@ export default function GamePage(props) {
                 </div>
                 <div className={"center-right"}>
                     <Dice
-                        values={playerTwoDiceValue}
+                        diceValues={playerTwoDiceValue}
                     />
                     <Button
                         color={"primary"}
                         variant={"contained"}
-                        onClick={handleDiceRoll}
+                        onClick={() => {
+                            gameSocket.send(JSON.stringify({
+                                'action': '/roll',
+                                'data': {
+                                    'player_number': 2
+                                }
+                            }));
+                        }}
                         disabled={(playerNumber === 1)}
                     >
                         Roll Die

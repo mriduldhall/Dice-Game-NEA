@@ -1,5 +1,5 @@
 import json
-
+from random import randint
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from .models import User, Game
@@ -26,7 +26,8 @@ class GameConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         action = text_data_json['action']
-        self.action_list[action]()
+        data = text_data_json['data']
+        self.action_list[action](data)
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -71,6 +72,22 @@ class GameConsumer(WebsocketConsumer):
             }
         )
 
+    def roll_die(self, data):
+        print("Rolling")
+        dice_one = randint(1, 6)
+        dice_two = randint(1, 6)
+        async_to_sync(self.channel_layer.group_send)(
+            self.game_name,
+            {
+                'type': 'send_signal',
+                'action': '/rolled',
+                'additional_data': {
+                    'dice_values': [dice_one, dice_two],
+                    'dice_roller': data['player_number'],
+                }
+            }
+        )
+
     def send_signal(self, event):
         action = event["action"]
         additional_data = event["additional_data"]
@@ -79,7 +96,3 @@ class GameConsumer(WebsocketConsumer):
             'action': action,
             'additional_data': additional_data,
         }))
-
-
-    def roll_die(self):
-        print("Rolling")
