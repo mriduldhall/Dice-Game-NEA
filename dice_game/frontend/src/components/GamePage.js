@@ -13,6 +13,13 @@ const CherryRedTextTypography = withStyles({
 })(Typography);
 
 
+const PinkTextTypography = withStyles({
+  root: {
+    color: "#ff00ac",
+  }
+})(Typography);
+
+
 export default function GamePage(props) {
     let [pauseStatus, setPauseStatus] = useState(false)
     let [gameSocket, setGameSocket] = useState(null)
@@ -129,11 +136,6 @@ export default function GamePage(props) {
     function renderGamePage() {
         return (
             <div className={"center game-background"}>
-                {
-                    (pauseStatus === false) ?
-                        renderPauseButton():
-                        renderPauseMenu()
-                }
                 <div className={"center-left"}>
                     <Dice
                         diceValues={playerOneDiceValue}
@@ -174,6 +176,16 @@ export default function GamePage(props) {
                         Roll Die
                     </Button>
                 </div>
+                <div className={"center"}>
+                    <PinkTextTypography variant={"h2"} compact={"h2"}>
+                        Player 1's Turn
+                    </PinkTextTypography>
+                </div>
+                {
+                    (pauseStatus === false) ?
+                        renderPauseButton():
+                        renderPauseMenu()
+                }
             </div>
         );
     }
