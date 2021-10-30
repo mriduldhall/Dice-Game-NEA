@@ -64,3 +64,7 @@ body {
   transform: translate(-50%, -50%);
   max-width: 128px;
 }
+
+.score-positioning {
+  transform: translate(65%, 100%);
+}

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import {Grid, Typography, Button, Card, withStyles} from "@material-ui/core";
+import {Grid, Typography, Button, Avatar, Card, withStyles} from "@material-ui/core";
 import Dice from "./Dice";
 
 
@@ -28,6 +28,8 @@ export default function GamePage(props) {
     let [playerTwoDiceValue, setPlayerTwoDiceValue] = useState([6, 6]);
     let [playerNumber, setPlayerNumber] = useState(null);
     let [turn, setTurn] = useState(null);
+    let [playerOneScore, setPlayerOneScore] = useState(0);
+    let [playerTwoScore, setPlayerTwoScore] = useState(0);
     const history = useHistory();
 
     useEffect(
@@ -161,6 +163,13 @@ export default function GamePage(props) {
                     >
                         Roll Die
                     </Button>
+                    <br/>
+                    <Avatar
+                        style={{backgroundColor: "#000000"}}
+                        className={"score-positioning"}
+                    >
+                        {playerOneScore}
+                    </Avatar>
                 </div>
                 <div className={"center-right"}>
                     <Dice
@@ -181,6 +190,12 @@ export default function GamePage(props) {
                     >
                         Roll Die
                     </Button>
+                    <Avatar
+                        style={{backgroundColor: "#000000"}}
+                        className={"score-positioning"}
+                    >
+                        {playerOneScore}
+                    </Avatar>
                 </div>
                 <div className={"center"}>
                     <PinkTextTypography variant={"h2"} compact={"h2"}>
