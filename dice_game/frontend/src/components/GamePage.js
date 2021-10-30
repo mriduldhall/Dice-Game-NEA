@@ -27,6 +27,7 @@ export default function GamePage(props) {
     let [playerOneDiceValue, setPlayerOneDiceValue] = useState([6, 6]);
     let [playerTwoDiceValue, setPlayerTwoDiceValue] = useState([6, 6]);
     let [playerNumber, setPlayerNumber] = useState(null);
+    let [turn, setTurn] = useState(null);
     const history = useHistory();
 
     useEffect(
@@ -61,11 +62,16 @@ export default function GamePage(props) {
             setPlayerTwoDiceValue(data.dice_values)
     }
 
+    function updateTurn(data) {
+        setTurn(data.turn);
+    }
+
     function setupWebsocket() {
         let webSocket = new WebSocket('ws://' + window.location.host + '/ws/game');
         const messageActions = {
             "/start": startGame,
             "/rolled": rollDie,
+            "/turn": updateTurn,
         };
         webSocket.onmessage = (e) => {
             const message = JSON.parse(e.data);
@@ -178,7 +184,7 @@ export default function GamePage(props) {
                 </div>
                 <div className={"center"}>
                     <PinkTextTypography variant={"h2"} compact={"h2"}>
-                        Player 1's Turn
+                        Player {turn}'s Turn
                     </PinkTextTypography>
                 </div>
                 {
