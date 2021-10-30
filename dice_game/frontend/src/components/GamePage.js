@@ -59,9 +59,13 @@ export default function GamePage(props) {
     }
 
     function rollDie(data) {
-        (data.dice_roller === 1) ?
-            setPlayerOneDiceValue(data.dice_values) :
-            setPlayerTwoDiceValue(data.dice_values)
+        if (data.dice_roller === 1) {
+            setPlayerOneDiceValue(data.dice_values);
+            setPlayerOneScore(data.score);
+        } else {
+            setPlayerTwoDiceValue(data.dice_values);
+            setPlayerTwoScore(data.score);
+        }
     }
 
     function updateTurn(data) {
@@ -163,7 +167,6 @@ export default function GamePage(props) {
                     >
                         Roll Die
                     </Button>
-                    <br/>
                     <Avatar
                         style={{backgroundColor: "#000000"}}
                         className={"score-positioning"}
@@ -194,7 +197,7 @@ export default function GamePage(props) {
                         style={{backgroundColor: "#000000"}}
                         className={"score-positioning"}
                     >
-                        {playerOneScore}
+                        {playerTwoScore}
                     </Avatar>
                 </div>
                 <div className={"center"}>

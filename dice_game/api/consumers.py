@@ -86,11 +86,36 @@ class GameConsumer(WebsocketConsumer):
         game.current_turn = 1
         game.save(update_fields=["current_turn"])
 
+    def calculate_score(self, current_score, dice_one, dice_two):
+        total = dice_one + dice_two
+        if total % 2 == 0:
+            total += 10
+            if dice_one == dice_two:
+                bonus_die = randint(1, 6)
+                total += bonus_die
+        else:
+            total -= 5
+        current_score += total
+        if current_score < 0:
+            current_score = 0
+        return current_score
+
     def roll_die(self, data):
         game = Game.objects.filter(id=self.scope["session"]["game_id"])[0]
         if game.current_turn == data['player_number']:
+            if game.current_turn == 1:
+                current_score = game.player_one_score
+                next_turn = 2
+            else:
+                current_score = game.player_two_score
+                next_turn = 1
             dice_one = randint(1, 6)
             dice_two = randint(1, 6)
+            new_score = self.calculate_score(current_score, dice_one, dice_two)
+            if game.current_turn == 1:
+                game.player_one_score = new_score
+            else:
+                game.player_two_score = new_score
             async_to_sync(self.channel_layer.group_send)(
                 self.game_name,
                 {
@@ -99,15 +124,12 @@ class GameConsumer(WebsocketConsumer):
                     'additional_data': {
                         'dice_values': [dice_one, dice_two],
                         'dice_roller': data['player_number'],
+                        'score': new_score,
                     }
                 }
             )
-            if game.current_turn == 1:
-                next_turn = 2
-            else:
-                next_turn = 1
             game.current_turn = next_turn
-            game.save(update_fields=["current_turn"])
+            game.save(update_fields=["current_turn", "player_one_score", "player_two_score"])
             async_to_sync(self.channel_layer.group_send)(
                 self.game_name,
                 {
