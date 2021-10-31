@@ -109,6 +109,7 @@ class GameConsumer(WebsocketConsumer):
             else:
                 current_score = game.player_two_score
                 next_turn = 1
+                game.current_round += 1
             dice_one = randint(1, 6)
             dice_two = randint(1, 6)
             new_score = self.calculate_score(current_score, dice_one, dice_two)
@@ -129,7 +130,8 @@ class GameConsumer(WebsocketConsumer):
                 }
             )
             game.current_turn = next_turn
-            game.save(update_fields=["current_turn", "player_one_score", "player_two_score"])
+            game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "current_round"])
+            print(game.current_round)
             async_to_sync(self.channel_layer.group_send)(
                 self.game_name,
                 {

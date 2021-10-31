@@ -29,6 +29,7 @@ class User(models.Model):
 class Game(models.Model):
     id = models.AutoField(primary_key=True)
     current_turn = models.IntegerField(default=None, null=True)
+    current_round = models.IntegerField(default=1)
     player_one = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="player_two")
     player_one_score = models.IntegerField(default=0)
     player_two = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
