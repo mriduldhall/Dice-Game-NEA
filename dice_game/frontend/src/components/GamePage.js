@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import {Grid, Typography, Button, Avatar, Card, withStyles} from "@material-ui/core";
@@ -30,6 +30,7 @@ export default function GamePage(props) {
     let [turn, setTurn] = useState(null);
     let [playerOneScore, setPlayerOneScore] = useState(0);
     let [playerTwoScore, setPlayerTwoScore] = useState(0);
+    let [winner, setWinner] = useState(null);
     const history = useHistory();
 
     useEffect(
@@ -72,12 +73,17 @@ export default function GamePage(props) {
         setTurn(data.turn);
     }
 
+    function endGame(data) {
+        setWinner(data.winner);
+    }
+
     function setupWebsocket() {
         let webSocket = new WebSocket('ws://' + window.location.host + '/ws/game');
         const messageActions = {
             "/start": startGame,
             "/rolled": rollDie,
             "/turn": updateTurn,
+            "/end": endGame,
         };
         webSocket.onmessage = (e) => {
             const message = JSON.parse(e.data);
@@ -130,6 +136,26 @@ export default function GamePage(props) {
                     setPauseStatus(true)
                 }}
             />
+        );
+    }
+
+    function renderEndPage() {
+        return (
+            <div className={"center game-background"}>
+                <Card className={"center"} style={{backgroundColor: "#442424", padding:10}}>
+                    <CherryRedTextTypography variant={"h3"} compact={"h3"}>
+                        Winner: Player {winner}
+                    </CherryRedTextTypography>
+                    <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        to={'/dashboard'}
+                        component={Link}
+                    >
+                        Return to Main Menu
+                    </Button>
+                </Card>
+            </div>
         );
     }
 
@@ -217,6 +243,8 @@ export default function GamePage(props) {
     return (
         connecting === true ?
             renderConnectingPage() :
-            renderGamePage()
+            winner !== null ?
+                renderEndPage() :
+                renderGamePage()
     );
 }

@@ -1,5 +1,6 @@
 import json
 from random import randint
+from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from .models import User, Game
@@ -130,18 +131,36 @@ class GameConsumer(WebsocketConsumer):
                 }
             )
             game.current_turn = next_turn
-            game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "current_round"])
-            print(game.current_round)
-            async_to_sync(self.channel_layer.group_send)(
-                self.game_name,
-                {
-                    'type': 'send_signal',
-                    'action': '/turn',
-                    'additional_data': {
-                        'turn': game.current_turn,
+            if game.current_round <= 5:
+                game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "current_round"])
+                async_to_sync(self.channel_layer.group_send)(
+                    self.game_name,
+                    {
+                        'type': 'send_signal',
+                        'action': '/turn',
+                        'additional_data': {
+                            'turn': game.current_turn,
+                        }
                     }
-                }
-            )
+                )
+            else:
+                game.current_turn = None
+                game.game_end = datetime.now()
+                if game.player_one_score > game.player_two_score:
+                    winner = 1
+                else:
+                    winner = 2
+                game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "game_end"])
+                async_to_sync(self.channel_layer.group_send)(
+                    self.game_name,
+                    {
+                        'type': 'send_signal',
+                        'action': '/end',
+                        'additional_data': {
+                            'winner': winner,
+                        }
+                    }
+                )
 
     def send_signal(self, event):
         action = event["action"]
