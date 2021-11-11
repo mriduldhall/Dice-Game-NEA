@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { useHistory, Link } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
@@ -22,7 +22,7 @@ const PinkTextTypography = withStyles({
 
 export default function GamePage(props) {
     let [pauseStatus, setPauseStatus] = useState(false)
-    let [gameSocket, setGameSocket] = useState(null)
+    const gameSocket = useRef(null);
     let [connecting, setConnecting] = useState(true)
     let [playerOneDiceValue, setPlayerOneDiceValue] = useState([6, 6]);
     let [playerTwoDiceValue, setPlayerTwoDiceValue] = useState([6, 6]);
@@ -78,22 +78,21 @@ export default function GamePage(props) {
     }
 
     function setupWebsocket() {
-        let webSocket = new WebSocket('ws://' + window.location.host + '/ws/game');
+        gameSocket.current = new WebSocket('ws://' + window.location.host + '/ws/game');
         const messageActions = {
             "/start": startGame,
             "/rolled": rollDie,
             "/turn": updateTurn,
             "/end": endGame,
         };
-        webSocket.onmessage = (e) => {
+        gameSocket.current.onmessage = (e) => {
             const message = JSON.parse(e.data);
             messageActions[message.action](message.additional_data);
         };
-        setGameSocket(webSocket);
     }
 
     function handleExitButtonClicked() {
-        gameSocket.close();
+        gameSocket.current.close();
         history.push('/dashboard');
     }
 
@@ -182,7 +181,7 @@ export default function GamePage(props) {
                         color={"primary"}
                         variant={"contained"}
                         onClick={() => {
-                            gameSocket.send(JSON.stringify({
+                            gameSocket.current.send(JSON.stringify({
                                 'action': '/roll',
                                 'data': {
                                     'player_number': 1
@@ -208,7 +207,7 @@ export default function GamePage(props) {
                         color={"primary"}
                         variant={"contained"}
                         onClick={() => {
-                            gameSocket.send(JSON.stringify({
+                            gameSocket.current.send(JSON.stringify({
                                 'action': '/roll',
                                 'data': {
                                     'player_number': 2
