@@ -26,7 +26,7 @@ body {
 }
 
 .main-background {
-  background: url("https://c.pxhere.com/photos/fe/25/cube_play_random_luck_points_numbers_eyes_magic_cube_craps-1282150.jpg!d") no-repeat center center fixed;
+  background: url("https://c.pxhere.com/photos/fe/25/cube_play_random_luck_points_numbers_eyes_magic_cube_craps-1282150.jpg!d") center;
   height: 100%;
   width: 100%;
   -webkit-background-size: cover;
@@ -36,7 +36,7 @@ body {
 }
 
 .game-background {
-  background: url("../images/Game Background.jpg") no-repeat center center fixed;
+  background: url("../images/Game Background.jpg") center;
   height: 100%;
   width: 100%;
   -webkit-background-size: cover;
