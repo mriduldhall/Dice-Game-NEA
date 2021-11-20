@@ -13,16 +13,12 @@ export default function Dice(props) {
         reactDice.rollAll(props.diceValues);
     }
 
-    function rollDoneCallback(num) {
-        console.log(`You rolled a ${num}`)
-    }
-
     return (
         <div>
             <ReactDice
                 numDice={2}
                 disableIndividual={true}
-                rollDone={rollDoneCallback}
+                rollDone={props.rollDoneCallback}
                 ref={dice => setReactDice(dice)}
             />
         </div>
@@ -31,5 +27,6 @@ export default function Dice(props) {
 
 
 Dice.defaultProps = {
-    'diceValues': [6, 6]
+    'diceValues': [6, 6],
+    'rollDoneCallback': () => {}
 }

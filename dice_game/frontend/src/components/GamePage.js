@@ -31,6 +31,7 @@ export default function GamePage(props) {
     let [playerOneScore, setPlayerOneScore] = useState(0);
     let [playerTwoScore, setPlayerTwoScore] = useState(0);
     let [winner, setWinner] = useState(null);
+    let [tempData, setTempData] = useState(null);
     const history = useHistory();
 
     useEffect(
@@ -60,17 +61,29 @@ export default function GamePage(props) {
     }
 
     function rollDie(data) {
+        setTempData(data);
         if (data.dice_roller === 1) {
             setPlayerOneDiceValue(data.dice_values);
-            setPlayerOneScore(data.score);
         } else {
             setPlayerTwoDiceValue(data.dice_values);
-            setPlayerTwoScore(data.score);
         }
     }
 
     function updateTurn(data) {
         setTurn(data.turn);
+    }
+
+    function diceRolled() {
+        if (tempData.dice_roller === 1) {
+            setPlayerOneScore(tempData.score);
+        } else {
+            setPlayerTwoScore(tempData.score);
+        }
+        setTempData(null);
+        gameSocket.current.send(JSON.stringify({
+            'action': '/next',
+            'data': {}
+        }));
     }
 
     function endGame(data) {
@@ -176,6 +189,7 @@ export default function GamePage(props) {
                 <div className={"center-left"}>
                     <Dice
                         diceValues={playerOneDiceValue}
+                        rollDoneCallback={diceRolled}
                     />
                     <Button
                         color={"primary"}
@@ -184,7 +198,7 @@ export default function GamePage(props) {
                             gameSocket.current.send(JSON.stringify({
                                 'action': '/roll',
                                 'data': {
-                                    'player_number': 1
+                                    'player_number': playerNumber
                                 }
                             }));
                         }}
@@ -202,6 +216,7 @@ export default function GamePage(props) {
                 <div className={"center-right"}>
                     <Dice
                         diceValues={playerTwoDiceValue}
+                        rollDoneCallback={diceRolled}
                     />
                     <Button
                         color={"primary"}
@@ -210,7 +225,7 @@ export default function GamePage(props) {
                             gameSocket.current.send(JSON.stringify({
                                 'action': '/roll',
                                 'data': {
-                                    'player_number': 2
+                                    'player_number': playerNumber
                                 }
                             }));
                         }}
