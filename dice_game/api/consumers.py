@@ -13,6 +13,7 @@ class GameConsumer(WebsocketConsumer):
         self.action_list = {
             "/roll": self.roll_die,
             "/next": self.send_next_signal,
+            "/cancel": self.cancel_game,
         }
         self.pending_messages = []
         self.number_of_rounds = 5
@@ -38,6 +39,8 @@ class GameConsumer(WebsocketConsumer):
             self.game_name,
             self.channel_name
         )
+        del self.scope["session"]["game_id"]
+        self.scope["session"].save()
 
     def find_empty_game(self):
         games = Game.objects.filter(player_two=None, game_end=None).exclude(player_one__username=self.scope["session"]["username"])
@@ -52,10 +55,12 @@ class GameConsumer(WebsocketConsumer):
         self.scope["session"]["player_number"] = 1
         self.game_name = "game_" + str(game.id)
         self.scope["session"]["game_id"] = game.id
+        self.scope["session"].save()
         async_to_sync(self.channel_layer.group_add)(
             self.game_name,
             self.channel_name
         )
+        self.scope["session"].save()
 
     def connect_to_existing_game(self, game):
         game.player_two = User.objects.get(username=self.scope["session"]["username"])
@@ -89,6 +94,7 @@ class GameConsumer(WebsocketConsumer):
         )
         game.current_turn = 1
         game.save(update_fields=["current_turn"])
+        self.scope["session"].save()
 
     @staticmethod
     def calculate_score(current_score, dice_one, dice_two):
@@ -170,6 +176,7 @@ class GameConsumer(WebsocketConsumer):
                         }
                     ]
                 )
+            self.scope["session"].save()
 
     def send_next_signal(self, data):
         if self.pending_messages:
@@ -181,6 +188,9 @@ class GameConsumer(WebsocketConsumer):
                 self.pending_messages[0][0], self.pending_messages[0][1]
             )
             del self.pending_messages[0]
+
+    def cancel_game(self, data):
+        Game.objects.filter(id=self.scope["session"]["game_id"])[0].delete()
 
     def send_signal(self, event):
         action = event["action"]

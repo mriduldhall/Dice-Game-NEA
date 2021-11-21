@@ -109,6 +109,15 @@ export default function GamePage(props) {
         history.push('/dashboard');
     }
 
+    function handleCancelButtonClicked() {
+        gameSocket.current.send(JSON.stringify({
+            'action': '/cancel',
+            'data': {}
+        }));
+        gameSocket.current.close();
+        history.push('/dashboard');
+    }
+
     function renderPauseMenu() {
         return (
             <Grid style={{background: "transparent"}}>
@@ -177,6 +186,13 @@ export default function GamePage(props) {
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Awaiting Second Player...
                     </CherryRedTextTypography>
+                    <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        onClick={handleCancelButtonClicked}
+                    >
+                        Cancel
+                    </Button>
                 </Card>
             </div>
         );
