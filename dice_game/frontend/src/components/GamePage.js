@@ -161,8 +161,7 @@ export default function GamePage(props) {
                     <Button
                         color={"primary"}
                         variant={"contained"}
-                        to={'/dashboard'}
-                        component={Link}
+                        onClick={handleExitButtonClicked}
                     >
                         Return to Main Menu
                     </Button>
