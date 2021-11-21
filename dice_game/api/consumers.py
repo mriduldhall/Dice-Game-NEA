@@ -15,6 +15,7 @@ class GameConsumer(WebsocketConsumer):
             "/next": self.send_next_signal,
         }
         self.pending_messages = []
+        self.number_of_rounds = 5
 
     def connect(self):
         if "username" not in self.scope["session"]:
@@ -134,18 +135,10 @@ class GameConsumer(WebsocketConsumer):
                 }
             )
             game.current_turn = None
-            if game.current_round <= 5:
+            if game.player_one_score == game.player_two_score and game.current_round > self.number_of_rounds:
+                self.number_of_rounds += 1
+            if game.current_round <= self.number_of_rounds:
                 game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "current_round"])
-                # async_to_sync(self.channel_layer.group_send)(
-                #     self.game_name,
-                #     {
-                #         'type': 'send_signal',
-                #         'action': '/turn',
-                #         'additional_data': {
-                #             'turn': game.current_turn,
-                #         }
-                #     }
-                # )
                 self.pending_messages.append(
                     [
                         self.game_name,
@@ -165,16 +158,6 @@ class GameConsumer(WebsocketConsumer):
                 else:
                     winner = 2
                 game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "game_end"])
-                # async_to_sync(self.channel_layer.group_send)(
-                #     self.game_name,
-                #     {
-                #         'type': 'send_signal',
-                #         'action': '/end',
-                #         'additional_data': {
-                #             'winner': winner,
-                #         }
-                #     }
-                # )
                 self.pending_messages.append(
                     [
                         self.game_name,
