@@ -14,6 +14,7 @@ class GameConsumer(WebsocketConsumer):
             "/roll": self.roll_die,
             "/next": self.send_next_signal,
             "/cancel": self.cancel_game,
+            "/leave": self.leave_game,
         }
         self.pending_messages = []
         self.number_of_rounds = 5
@@ -22,11 +23,13 @@ class GameConsumer(WebsocketConsumer):
         if "username" not in self.scope["session"]:
             self.close()
         game = self.find_empty_game()
-        if game:
+        self.accept()
+        if game == "in-game":
+            self.rejoin_game()
+        elif game:
             self.connect_to_existing_game(game)
         else:
             self.create_new_game()
-        self.accept()
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -39,14 +42,15 @@ class GameConsumer(WebsocketConsumer):
             self.game_name,
             self.channel_name
         )
-        del self.scope["session"]["game_id"]
-        self.scope["session"].save()
 
     def find_empty_game(self):
-        games = Game.objects.filter(player_two=None, game_end=None).exclude(player_one__username=self.scope["session"]["username"])
-        if games:
-            return games[0]
-        return None
+        if "game_id" not in self.scope["session"]:
+            games = Game.objects.filter(player_two=None, game_end=None).exclude(player_one__username=self.scope["session"]["username"])
+            if games:
+                return games[0]
+            return None
+        else:
+            return "in-game"
 
     def create_new_game(self):
         game = Game.objects.create(
@@ -60,6 +64,38 @@ class GameConsumer(WebsocketConsumer):
             self.game_name,
             self.channel_name
         )
+        self.scope["session"].save()
+
+    def rejoin_game(self):
+        game = Game.objects.get(id=self.scope["session"]["game_id"])
+        if game.player_one.username == self.scope["session"]["username"]:
+            self.scope["session"]["player_number"] = 1
+        else:
+            self.scope["session"]["player_number"] = 2
+        self.game_name = "game_" + str(self.scope["session"]["game_id"])
+        async_to_sync(self.channel_layer.group_add)(
+            self.game_name,
+            self.channel_name
+        )
+        if game.player_two:
+            if game.game_end:
+                if game.player_one_score > game.player_two_score:
+                    winner = 1
+                else:
+                    winner = 2
+            async_to_sync(self.channel_layer.group_send)(
+                self.game_name,
+                {
+                    'type': 'send_signal',
+                    'action': '/update',
+                    'additional_data': {
+                        'turn': game.current_turn,
+                        'player_one_score': game.player_one_score,
+                        'player_two_score': game.player_two_score,
+                        'winner': winner,
+                    }
+                }
+            )
         self.scope["session"].save()
 
     def connect_to_existing_game(self, game):
@@ -184,6 +220,9 @@ class GameConsumer(WebsocketConsumer):
                 game = Game.objects.filter(id=self.scope["session"]["game_id"])[0]
                 game.current_turn = self.pending_messages[0][1]['additional_data']['turn']
                 game.save(update_fields=["current_turn"])
+            elif self.pending_messages[0][1]['action'] == "/end":
+                del self.scope["session"]["game_id"]
+                self.scope["session"].save()
             async_to_sync(self.channel_layer.group_send)(
                 self.pending_messages[0][0], self.pending_messages[0][1]
             )
@@ -191,6 +230,13 @@ class GameConsumer(WebsocketConsumer):
 
     def cancel_game(self, data):
         Game.objects.filter(id=self.scope["session"]["game_id"])[0].delete()
+        del self.scope["session"]["game_id"]
+        self.scope["session"].save()
+
+    def leave_game(self, data):
+        if "game_id" in self.scope["session"]:
+            del self.scope["session"]["game_id"]
+            self.scope["session"].save()
 
     def send_signal(self, event):
         action = event["action"]

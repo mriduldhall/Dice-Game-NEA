@@ -86,6 +86,15 @@ export default function GamePage(props) {
         }));
     }
 
+    function updateGame(data) {
+        setConnecting(false);
+        setPlayerNumber(data.player_number);
+        setTurn(data.turn);
+        setPlayerOneScore(data.player_one_score);
+        setPlayerTwoScore(data.player_two_score);
+        setWinner(data.winner);
+    }
+
     function endGame(data) {
         setWinner(data.winner);
     }
@@ -97,6 +106,7 @@ export default function GamePage(props) {
             "/rolled": rollDie,
             "/turn": updateTurn,
             "/end": endGame,
+            "/update": updateGame,
         };
         gameSocket.current.onmessage = (e) => {
             const message = JSON.parse(e.data);
@@ -105,6 +115,10 @@ export default function GamePage(props) {
     }
 
     function handleExitButtonClicked() {
+        gameSocket.current.send(JSON.stringify({
+            'action': '/leave',
+            'data': {}
+        }));
         gameSocket.current.close();
         history.push('/dashboard');
     }
