@@ -78,6 +78,7 @@ class GameConsumer(WebsocketConsumer):
             self.channel_name
         )
         if game.player_two:
+            winner = None
             if game.game_end:
                 if game.player_one_score > game.player_two_score:
                     winner = 1
@@ -220,9 +221,6 @@ class GameConsumer(WebsocketConsumer):
                 game = Game.objects.filter(id=self.scope["session"]["game_id"])[0]
                 game.current_turn = self.pending_messages[0][1]['additional_data']['turn']
                 game.save(update_fields=["current_turn"])
-            elif self.pending_messages[0][1]['action'] == "/end":
-                del self.scope["session"]["game_id"]
-                self.scope["session"].save()
             async_to_sync(self.channel_layer.group_send)(
                 self.pending_messages[0][0], self.pending_messages[0][1]
             )
@@ -234,9 +232,8 @@ class GameConsumer(WebsocketConsumer):
         self.scope["session"].save()
 
     def leave_game(self, data):
-        if "game_id" in self.scope["session"]:
-            del self.scope["session"]["game_id"]
-            self.scope["session"].save()
+        del self.scope["session"]["game_id"]
+        self.scope["session"].save()
 
     def send_signal(self, event):
         action = event["action"]

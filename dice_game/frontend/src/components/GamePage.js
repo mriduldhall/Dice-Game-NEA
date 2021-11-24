@@ -92,7 +92,9 @@ export default function GamePage(props) {
         setTurn(data.turn);
         setPlayerOneScore(data.player_one_score);
         setPlayerTwoScore(data.player_two_score);
-        setWinner(data.winner);
+        if (data.winner !== null) {
+            setWinner(data.winner);
+        }
     }
 
     function endGame(data) {
