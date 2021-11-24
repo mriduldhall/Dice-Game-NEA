@@ -1,5 +1,6 @@
-import React, {useEffect} from "react";
-import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
+import React, {useEffect, useState} from "react";
+import {Grid, Typography, Button, ButtonGroup, Card, withStyles, Collapse} from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 
@@ -13,17 +14,17 @@ const CherryRedTextTypography = withStyles({
 
 export default function DashboardPage(props) {
     const history = useHistory();
-
+    let [gameStatus, setGameStatus] = useState(false);
 
     useEffect(() => {
         validateAccess();
         let interval;
         interval = setInterval(validateAccess, 300000);
+        checkCurrentGameStatus();
         return function cleanup() {
             clearInterval(interval);
         };
     });
-
 
     function validateAccess() {
         fetch('api/validate-access')
@@ -34,6 +35,16 @@ export default function DashboardPage(props) {
             })
     }
 
+    function checkCurrentGameStatus() {
+        fetch('/api/current-game-status')
+            .then((response) => {
+                if (response.ok) {
+                    setGameStatus(true);
+                } else {
+                    setGameStatus(false);
+                }
+            })
+    }
 
     function handleLogoutButtonClicked() {
         fetch('api/logout')
@@ -44,12 +55,24 @@ export default function DashboardPage(props) {
             })
     }
 
+    function renderOngoingGameAlert() {
+        return (
+            <Grid item xs={12} align={"center"}>
+                <Alert
+                    severity={"warning"}
+                >
+                    You have an ongoing game
+                </Alert>
+            </Grid>
+        );
+    }
 
     function renderDashboardPage() {
         return (
             <div className={"center"}>
                 <Card style={{backgroundColor: "#442424", padding:10}}>
                     <Grid container align={"center"}>
+                        {(gameStatus === true) ? renderOngoingGameAlert() : null}
                         <Grid item xs={12} align={"center"}>
                             <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                                 Dice Game

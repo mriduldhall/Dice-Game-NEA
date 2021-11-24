@@ -19,7 +19,7 @@ class RegisterView(APIView):
             if not User.get_user_if_exists(username):
                 User(username=username, password=password).save()
                 self.request.session['username'] = username
-                return Response({'Message': 'Registered'}, status=status.HTTP_200_OK)
+                return Response({'Message': 'Registered'}, status=status.HTTP_201_CREATED)
             return Response({'Unauthorised': 'User exists'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({'Bad Request': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -61,3 +61,13 @@ class ValidateAccess(APIView):
             return Response({'Message': 'Access'}, status=status.HTTP_200_OK)
         else:
             return Response({'Unauthorised': 'No Access'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class CurrentGameStatus(APIView):
+    def get(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        if 'game_id' in self.request.session:
+            return Response({'Message': 'In Game'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'Message': 'Not In Game'}, status=status.HTTP_401_UNAUTHORIZED)

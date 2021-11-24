@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from "react";
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import {Grid, Typography, Button, Avatar, Card, withStyles} from "@material-ui/core";
