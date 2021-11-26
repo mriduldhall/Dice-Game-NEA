@@ -6,6 +6,7 @@ class User(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.TextField(unique=True)
     password = models.TextField()
+    high_score = models.IntegerField(default=0)
 
     def __str__(self):
         return self.username
