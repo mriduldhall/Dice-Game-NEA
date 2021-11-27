@@ -200,6 +200,14 @@ class GameConsumer(WebsocketConsumer):
                     winner = 1
                 else:
                     winner = 2
+                user = User.objects.filter(username=game.player_one.username)[0]
+                if game.player_one_score > user.high_score:
+                    user.high_score = game.player_one_score
+                    user.save(update_fields=["high_score"])
+                user = User.objects.filter(username=game.player_two.username)[0]
+                if game.player_two_score > user.high_score:
+                    user.high_score = game.player_two_score
+                    user.save(update_fields=["high_score"])
                 game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "game_end"])
                 self.pending_messages.append(
                     [
