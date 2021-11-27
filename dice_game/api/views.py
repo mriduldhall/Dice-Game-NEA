@@ -12,6 +12,7 @@ class RegisterView(APIView):
     def post(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
+        request.data["username"] = request.data["username"].lower()
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             username = serializer.data.get('username').capitalize()
@@ -30,6 +31,7 @@ class LoginView(APIView):
     def post(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
+        request.data["username"] = request.data["username"].lower()
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             username = serializer.data.get('username').capitalize()
