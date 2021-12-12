@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, LoginView, LogoutView, ValidateAccess, CurrentGameStatus
+from .views import RegisterView, LoginView, LogoutView, ValidateAccess, CurrentGameStatus, LeaderboardView
 
 urlpatterns = [
     path('register', RegisterView.as_view()),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('logout', LogoutView.as_view()),
     path('validate-access', ValidateAccess.as_view()),
     path('current-game-status', CurrentGameStatus.as_view()),
+    path('leaderboard', LeaderboardView.as_view()),
 ]

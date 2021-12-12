@@ -1,7 +1,8 @@
 from .models import User
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LeaderboardSerializer
+from django.http import JsonResponse
 from rest_framework.response import Response
 
 
@@ -73,3 +74,10 @@ class CurrentGameStatus(APIView):
             return Response({'Message': 'In Game'}, status=status.HTTP_200_OK)
         else:
             return Response({'Message': 'Not In Game'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LeaderboardView(APIView):
+    def get(self, request, format=None):
+        leaderboard = User.objects.order_by("-high_score")[:10]
+        leaderboard = LeaderboardSerializer(leaderboard, many=True)
+        return JsonResponse(leaderboard.data, status=status.HTTP_200_OK, safe=False)
