@@ -7,4 +7,5 @@ urlpatterns = [
     path('login', index),
     path('dashboard', index),
     path('game', index),
+    path('leaderboard', index),
 ]

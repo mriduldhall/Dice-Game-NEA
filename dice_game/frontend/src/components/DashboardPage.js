@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Grid, Typography, Button, ButtonGroup, Card, withStyles, Collapse} from "@material-ui/core";
+import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
@@ -86,7 +86,7 @@ export default function DashboardPage(props) {
                                 <Button color={"default"}>
                                     Info
                                 </Button>
-                                <Button color={"default"}>
+                                <Button color={"default"} to={'/leaderboard'} component={Link}>
                                     Leaderboard
                                 </Button>
                                 <Button color={"secondary"} onClick={handleLogoutButtonClicked}>
