@@ -43,13 +43,15 @@ export default function LeaderboardPage(props) {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell/>
                                 <TableCell style={{fontSize:35, color:"#2e83f1"}}>Username</TableCell>
                                 <TableCell style={{fontSize:35, color:"#2e83f1"}}>Score</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {leaderboardData.map((row) => (
+                            {leaderboardData.map((row, element) => (
                                 <TableRow key={row.username}>
+                                    <TableCell style={{fontSize:17, color:"#ffffff"}}><b>{element + 1}</b></TableCell>
                                     <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.username}</TableCell>
                                     <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.high_score}</TableCell>
                                 </TableRow>
