@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, LeaderboardSerializer
 from django.http import JsonResponse
 from rest_framework.response import Response
+from collections import namedtuple
 
 
 # Create your views here.
@@ -78,6 +79,14 @@ class CurrentGameStatus(APIView):
 
 class LeaderboardView(APIView):
     def get(self, request, format=None):
-        leaderboard = User.objects.order_by("-high_score")[:10]
-        leaderboard = LeaderboardSerializer(leaderboard, many=True)
-        return JsonResponse(leaderboard.data, status=status.HTTP_200_OK, safe=False)
+        Leaderboard = namedtuple('Leaderboard', ('leaderboard', 'personal'))
+        users = User.objects.order_by("-high_score")
+        current_user = User.objects.filter(username=self.request.session["username"])[0]
+        position = User.objects.filter(high_score__gt=current_user.high_score).count() + 1
+        current_user.position = position
+        leaderboard = Leaderboard(
+            leaderboard=users[:10],
+            personal=current_user,
+        )
+        serializer = LeaderboardSerializer(leaderboard)
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)

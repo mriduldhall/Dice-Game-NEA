@@ -8,7 +8,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
-class LeaderboardSerializer(serializers.ModelSerializer):
+class UserScoreSerializer(serializers.ModelSerializer):
+    position = serializers.IntegerField(required=False, default=None, allow_null=True)
+
     class Meta:
         model = User
-        fields = ('username', 'high_score')
+        fields = ('username', 'high_score', 'position')
+
+
+class LeaderboardSerializer(serializers.Serializer):
+    leaderboard = UserScoreSerializer(many=True)
+    personal = UserScoreSerializer()

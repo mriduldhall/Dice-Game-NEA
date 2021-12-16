@@ -26,14 +26,30 @@ export default function LeaderboardPage(props) {
                 if (response.ok) {
                     return response.json();
                 }
-                else {
-                    console.log("Error")
-                }
             })
             .then((data) => {
-                console.log(data);
                 setLeaderboardData(data);
             });
+    }
+
+    function renderPersonalTableRow(row) {
+        return (
+            <TableRow>
+                <TableCell style={{fontSize:17, color:"#2e83f1"}}><b>{row.position}</b></TableCell>
+                <TableCell style={{fontSize:17, color:"#2e83f1"}}>{row.username}</TableCell>
+                <TableCell style={{fontSize:17, color:"#2e83f1"}}>{row.high_score}</TableCell>
+            </TableRow>
+        );
+    }
+
+    function renderRegularTableRow (row, element) {
+        return (
+            <TableRow key={row.username}>
+                <TableCell style={{fontSize:17, color:"#ffffff"}}><b>{element + 1}</b></TableCell>
+                <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.username}</TableCell>
+                <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.high_score}</TableCell>
+            </TableRow>
+        );
     }
 
     function renderLeaderboardTable() {
@@ -49,13 +65,10 @@ export default function LeaderboardPage(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {leaderboardData.map((row, element) => (
-                                <TableRow key={row.username}>
-                                    <TableCell style={{fontSize:17, color:"#ffffff"}}><b>{element + 1}</b></TableCell>
-                                    <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.username}</TableCell>
-                                    <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.high_score}</TableCell>
-                                </TableRow>
+                            {leaderboardData.leaderboard.map((row, element) => (
+                                (leaderboardData.personal.position !== element + 1) ? renderRegularTableRow(row, element) : renderPersonalTableRow(leaderboardData.personal)
                             ))}
+                            {(leaderboardData.personal.position > leaderboardData.leaderboard.length) ? renderPersonalTableRow(leaderboardData.personal) : null}
                         </TableBody>
                     </Table>
                 </TableContainer>
