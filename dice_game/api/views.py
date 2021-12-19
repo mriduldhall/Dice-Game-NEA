@@ -1,7 +1,7 @@
 from .models import User
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import UserSerializer, LeaderboardSerializer
+from .serializers import UserSerializer, UsernameSerializer, LeaderboardSerializer
 from django.http import JsonResponse
 from rest_framework.response import Response
 from collections import namedtuple
@@ -65,6 +65,16 @@ class ValidateAccess(APIView):
             return Response({'Message': 'Access'}, status=status.HTTP_200_OK)
         else:
             return Response({'Unauthorised': 'No Access'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class GetUsername(APIView):
+    def get(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        if 'username' in self.request.session:
+            return Response(UsernameSerializer({'username': self.request.session["username"]}).data, status=status.HTTP_200_OK)
+        else:
+            return Response({'Unauthorised': 'Not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CurrentGameStatus(APIView):

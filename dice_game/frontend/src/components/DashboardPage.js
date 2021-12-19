@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
+import {Grid, Typography, Button, ButtonGroup, Chip, Card, withStyles} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
@@ -15,9 +15,11 @@ const CherryRedTextTypography = withStyles({
 export default function DashboardPage(props) {
     const history = useHistory();
     let [gameStatus, setGameStatus] = useState(false);
+    let [username, setUsername] = useState(null);
 
     useEffect(() => {
         validateAccess();
+        getUsername();
         let interval;
         interval = setInterval(validateAccess, 300000);
         checkCurrentGameStatus();
@@ -33,6 +35,18 @@ export default function DashboardPage(props) {
                     history.push('/')
                 }
             })
+    }
+
+    function getUsername() {
+        fetch('api/get-username')
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                setUsername(data.username);
+            });
     }
 
     function checkCurrentGameStatus() {
@@ -69,33 +83,41 @@ export default function DashboardPage(props) {
 
     function renderDashboardPage() {
         return (
-            <div className={"center"}>
-                <Card style={{backgroundColor: "#442424", padding:10}}>
-                    <Grid container align={"center"}>
-                        {(gameStatus === true) ? renderOngoingGameAlert() : null}
-                        <Grid item xs={12} align={"center"}>
-                            <CherryRedTextTypography variant={"h3"} compact={"h3"}>
-                                Dice Game
-                            </CherryRedTextTypography>
+            <div>
+                <Chip
+                    className={"top-right"}
+                    label={username}
+                    variant={"outlined"}
+                    style={{backgroundColor: "#4A3838BF", fontSize:22, color: "#f31a4c"}}
+                />
+                <div className={"center"}>
+                    <Card style={{backgroundColor: "#442424", padding:10}}>
+                        <Grid container align={"center"}>
+                            {(gameStatus === true) ? renderOngoingGameAlert() : null}
+                            <Grid item xs={12} align={"center"}>
+                                <CherryRedTextTypography variant={"h3"} compact={"h3"}>
+                                    Dice Game
+                                </CherryRedTextTypography>
+                            </Grid>
+                            <Grid item xs={12} align={"center"}>
+                                <ButtonGroup disableElevation variant={"contained"} color={"primary"}>
+                                    <Button color={"primary"} to={'/game'} component={Link}>
+                                        Start Game
+                                    </Button>
+                                    <Button color={"default"}>
+                                        Info
+                                    </Button>
+                                    <Button color={"default"} to={'/leaderboard'} component={Link}>
+                                        Leaderboard
+                                    </Button>
+                                    <Button color={"secondary"} onClick={handleLogoutButtonClicked}>
+                                        Logout
+                                    </Button>
+                                </ButtonGroup>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} align={"center"}>
-                            <ButtonGroup disableElevation variant={"contained"} color={"primary"}>
-                                <Button color={"primary"} to={'/game'} component={Link}>
-                                    Start Game
-                                </Button>
-                                <Button color={"default"}>
-                                    Info
-                                </Button>
-                                <Button color={"default"} to={'/leaderboard'} component={Link}>
-                                    Leaderboard
-                                </Button>
-                                <Button color={"secondary"} onClick={handleLogoutButtonClicked}>
-                                    Logout
-                                </Button>
-                            </ButtonGroup>
-                        </Grid>
-                    </Grid>
-                </Card>
+                    </Card>
+                </div>
             </div>
         );
     }

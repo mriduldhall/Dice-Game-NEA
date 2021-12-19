@@ -8,6 +8,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username',)
+
+
 class UserScoreSerializer(serializers.ModelSerializer):
     position = serializers.IntegerField(required=False, default=None, allow_null=True)
 
