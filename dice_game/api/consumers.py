@@ -1,9 +1,8 @@
 import json
-from random import randint
-from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from .models import User, Game
+from .game import DiceGame
 
 
 class GameConsumer(WebsocketConsumer):
@@ -18,10 +17,12 @@ class GameConsumer(WebsocketConsumer):
         }
         self.pending_messages = []
         self.number_of_rounds = 5
+        self.dice_game = DiceGame()
 
     def connect(self):
         if "username" not in self.scope["session"]:
             self.close()
+        self.dice_game.player = User.objects.get(username=self.scope["session"]["username"])
         game = self.find_empty_game()
         self.accept()
         if game == "in-game":
@@ -45,7 +46,7 @@ class GameConsumer(WebsocketConsumer):
 
     def find_empty_game(self):
         if "game_id" not in self.scope["session"]:
-            games = Game.objects.filter(player_two=None, game_end=None).exclude(player_one__username=self.scope["session"]["username"])
+            games = self.dice_game.fetch_available_games()
             if games:
                 return games[0]
             return None
@@ -53,13 +54,10 @@ class GameConsumer(WebsocketConsumer):
             return "in-game"
 
     def create_new_game(self):
-        game = Game.objects.create(
-            player_one=User.objects.get(username=self.scope["session"]["username"])
-        )
+        self.dice_game.new_game()
+        self.game_name = "game_" + str(self.dice_game.game.id)
         self.scope["session"]["player_number"] = 1
-        self.game_name = "game_" + str(game.id)
-        self.scope["session"]["game_id"] = game.id
-        self.scope["session"].save()
+        self.scope["session"]["game_id"] = self.dice_game.game.id
         async_to_sync(self.channel_layer.group_add)(
             self.game_name,
             self.channel_name
@@ -67,8 +65,8 @@ class GameConsumer(WebsocketConsumer):
         self.scope["session"].save()
 
     def rejoin_game(self):
-        game = Game.objects.get(id=self.scope["session"]["game_id"])
-        if game.player_one.username == self.scope["session"]["username"]:
+        self.dice_game.rejoin_game(self.scope["session"]["game_id"])
+        if self.dice_game.game.player_one.username == self.dice_game.player.username:
             self.scope["session"]["player_number"] = 1
         else:
             self.scope["session"]["player_number"] = 2
@@ -77,35 +75,29 @@ class GameConsumer(WebsocketConsumer):
             self.game_name,
             self.channel_name
         )
-        if game.player_two:
-            winner = None
-            if game.game_end:
-                if game.player_one_score > game.player_two_score:
-                    winner = 1
-                else:
-                    winner = 2
+        if self.dice_game.game.player_two:
+            winner = self.dice_game.get_winner()
             async_to_sync(self.channel_layer.group_send)(
                 self.game_name,
                 {
                     'type': 'send_signal',
                     'action': '/update',
                     'additional_data': {
-                        'turn': game.current_turn,
-                        'player_one_score': game.player_one_score,
-                        'player_two_score': game.player_two_score,
+                        'turn': self.dice_game.game.current_turn,
+                        'player_one_score': self.dice_game.game.player_one_score,
+                        'player_two_score': self.dice_game.game.player_two_score,
                         'winner': winner,
-                        'round': game.current_round,
+                        'round': self.dice_game.game.current_round,
                     }
                 }
             )
         self.scope["session"].save()
 
     def connect_to_existing_game(self, game):
-        game.player_two = User.objects.get(username=self.scope["session"]["username"])
-        game.save(update_fields=["player_two"])
+        launch_game = self.dice_game.existing_game(game)
+        self.game_name = "game_" + str(self.dice_game.game.id)
         self.scope["session"]["player_number"] = 2
-        self.game_name = "game_" + str(game.id)
-        self.scope["session"]["game_id"] = game.id
+        self.scope["session"]["game_id"] = self.dice_game.game.id
         async_to_sync(self.channel_layer.group_add)(
             self.game_name,
             self.channel_name
@@ -127,46 +119,17 @@ class GameConsumer(WebsocketConsumer):
                 'action': '/turn',
                 'additional_data': {
                     'turn': 1,
-                    'round': game.current_round,
+                    'round': self.dice_game.game.current_round,
                 }
             }
         )
-        game.current_turn = 1
-        game.save(update_fields=["current_turn"])
+        launch_game()
         self.scope["session"].save()
 
-    @staticmethod
-    def calculate_score(current_score, dice_one, dice_two):
-        total = dice_one + dice_two
-        if total % 2 == 0:
-            total += 10
-            if dice_one == dice_two:
-                bonus_die = randint(1, 6)
-                total += bonus_die
-        else:
-            total -= 5
-        current_score += total
-        if current_score < 0:
-            current_score = 0
-        return current_score
-
     def roll_die(self, data):
-        game = Game.objects.filter(id=self.scope["session"]["game_id"])[0]
-        if game.current_turn == data['player_number']:
-            if game.current_turn == 1:
-                current_score = game.player_one_score
-                next_turn = 2
-            else:
-                current_score = game.player_two_score
-                next_turn = 1
-                game.current_round += 1
-            dice_one = randint(1, 6)
-            dice_two = randint(1, 6)
-            new_score = self.calculate_score(current_score, dice_one, dice_two)
-            if game.current_turn == 1:
-                game.player_one_score = new_score
-            else:
-                game.player_two_score = new_score
+        self.dice_game.game = Game.objects.get(id=self.dice_game.game.id)
+        if self.dice_game.game.current_turn == data['player_number']:
+            dice_one, dice_two, new_score, end_turn = self.dice_game.take_turn()
             async_to_sync(self.channel_layer.group_send)(
                 self.game_name,
                 {
@@ -179,11 +142,11 @@ class GameConsumer(WebsocketConsumer):
                     }
                 }
             )
-            game.current_turn = None
-            if game.player_one_score == game.player_two_score and game.current_round > self.number_of_rounds:
+            if (self.dice_game.game.player_one_score == self.dice_game.game.player_two_score and
+                    self.dice_game.game.current_round > self.number_of_rounds):
                 self.number_of_rounds += 1
-            if game.current_round <= self.number_of_rounds:
-                game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "current_round"])
+            if self.dice_game.game.current_round <= self.number_of_rounds:
+                next_turn = end_turn()
                 self.pending_messages.append(
                     [
                         self.game_name,
@@ -192,26 +155,13 @@ class GameConsumer(WebsocketConsumer):
                             'action': '/turn',
                             'additional_data': {
                                 'turn': next_turn,
-                                'round': game.current_round,
+                                'round': self.dice_game.game.current_round,
                             }
                         }
                     ]
                 )
             else:
-                game.game_end = datetime.now()
-                if game.player_one_score > game.player_two_score:
-                    winner = 1
-                else:
-                    winner = 2
-                user = User.objects.filter(username=game.player_one.username)[0]
-                if game.player_one_score > user.high_score:
-                    user.high_score = game.player_one_score
-                    user.save(update_fields=["high_score"])
-                user = User.objects.filter(username=game.player_two.username)[0]
-                if game.player_two_score > user.high_score:
-                    user.high_score = game.player_two_score
-                    user.save(update_fields=["high_score"])
-                game.save(update_fields=["current_turn", "player_one_score", "player_two_score", "game_end"])
+                winner = self.dice_game.end_game()
                 self.pending_messages.append(
                     [
                         self.game_name,
@@ -229,16 +179,14 @@ class GameConsumer(WebsocketConsumer):
     def send_next_signal(self, data):
         if self.pending_messages:
             if self.pending_messages[0][1]['action'] == "/turn":
-                game = Game.objects.filter(id=self.scope["session"]["game_id"])[0]
-                game.current_turn = self.pending_messages[0][1]['additional_data']['turn']
-                game.save(update_fields=["current_turn"])
+                self.dice_game.update_turn(self.pending_messages[0][1]['additional_data']['turn'])
             async_to_sync(self.channel_layer.group_send)(
                 self.pending_messages[0][0], self.pending_messages[0][1]
             )
             del self.pending_messages[0]
 
     def cancel_game(self, data):
-        Game.objects.filter(id=self.scope["session"]["game_id"])[0].delete()
+        self.dice_game.delete_game()
         del self.scope["session"]["game_id"]
         self.scope["session"].save()
 
