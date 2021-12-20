@@ -28,6 +28,7 @@ export default function GamePage(props) {
     let [playerTwoDiceValue, setPlayerTwoDiceValue] = useState([6, 6]);
     let [playerNumber, setPlayerNumber] = useState(null);
     let [turn, setTurn] = useState(null);
+    let [round, setRound] = useState(null);
     let [playerOneScore, setPlayerOneScore] = useState(0);
     let [playerTwoScore, setPlayerTwoScore] = useState(0);
     let [winner, setWinner] = useState(null);
@@ -71,6 +72,7 @@ export default function GamePage(props) {
 
     function updateTurn(data) {
         setTurn(data.turn);
+        setRound(data.round);
     }
 
     function diceRolled() {
@@ -90,6 +92,7 @@ export default function GamePage(props) {
         setConnecting(false);
         setPlayerNumber(data.player_number);
         setTurn(data.turn);
+        setRound(data.round);
         setPlayerOneScore(data.player_one_score);
         setPlayerTwoScore(data.player_two_score);
         if (data.winner !== null) {
@@ -271,9 +274,12 @@ export default function GamePage(props) {
                         {playerTwoScore}
                     </Avatar>
                 </div>
-                <div className={"center"}>
+                <div className={"center-text"}>
                     <PinkTextTypography variant={"h2"} compact={"h2"}>
                         Player {turn}'s Turn
+                    </PinkTextTypography>
+                    <PinkTextTypography variant={"h4"} compact={"h4"}>
+                        Round {round}
                     </PinkTextTypography>
                 </div>
                 {

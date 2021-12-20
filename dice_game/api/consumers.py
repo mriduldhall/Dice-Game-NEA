@@ -94,6 +94,7 @@ class GameConsumer(WebsocketConsumer):
                         'player_one_score': game.player_one_score,
                         'player_two_score': game.player_two_score,
                         'winner': winner,
+                        'round': game.current_round,
                     }
                 }
             )
@@ -126,6 +127,7 @@ class GameConsumer(WebsocketConsumer):
                 'action': '/turn',
                 'additional_data': {
                     'turn': 1,
+                    'round': game.current_round,
                 }
             }
         )
@@ -190,6 +192,7 @@ class GameConsumer(WebsocketConsumer):
                             'action': '/turn',
                             'additional_data': {
                                 'turn': next_turn,
+                                'round': game.current_round,
                             }
                         }
                     ]
