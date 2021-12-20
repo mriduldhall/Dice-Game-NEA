@@ -182,7 +182,7 @@ export default function GamePage(props) {
     function renderEndPage() {
         return (
             <div className={"center game-background"}>
-                <Card className={"center"} style={{backgroundColor: "#442424", padding:10}}>
+                <Card className={"center-text"} style={{backgroundColor: "#442424", padding:10}}>
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Winner: Player {winner}
                     </CherryRedTextTypography>
@@ -201,7 +201,7 @@ export default function GamePage(props) {
     function renderConnectingPage() {
         return (
             <div className={"center game-background"}>
-                <Card className={"center"} style={{backgroundColor: "#442424", padding:10}}>
+                <Card className={"center-text"} style={{backgroundColor: "#442424", padding:10}}>
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Awaiting Second Player...
                     </CherryRedTextTypography>
