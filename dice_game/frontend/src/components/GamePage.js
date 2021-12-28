@@ -33,6 +33,8 @@ export default function GamePage(props) {
     let [playerTwoScore, setPlayerTwoScore] = useState(0);
     let [winner, setWinner] = useState(null);
     let [tempData, setTempData] = useState(null);
+    let [playerOneName, setPlayerOneName] = useState(null);
+    let [playerTwoName, setPlayerTwoName] = useState(null);
     const history = useHistory();
 
     useEffect(
@@ -59,6 +61,8 @@ export default function GamePage(props) {
     function startGame(data) {
         setConnecting(false);
         setPlayerNumber(data.player_number);
+        setPlayerOneName(data.player_one);
+        setPlayerTwoName(data.player_two);
     }
 
     function rollDie(data) {
@@ -95,6 +99,8 @@ export default function GamePage(props) {
         setRound(data.round);
         setPlayerOneScore(data.player_one_score);
         setPlayerTwoScore(data.player_two_score);
+        setPlayerOneName(data.player_one);
+        setPlayerTwoName(data.player_two);
         if (data.winner !== null) {
             setWinner(data.winner);
         }
@@ -247,6 +253,11 @@ export default function GamePage(props) {
                         {playerOneScore}
                     </Avatar>
                 </div>
+                <div className={"bottom-left"}>
+                    <PinkTextTypography variant={"h5"} compact={"h5"}>
+                        {playerOneName}
+                    </PinkTextTypography>
+                </div>
                 <div className={"center-right"}>
                     <Dice
                         diceValues={playerTwoDiceValue}
@@ -273,6 +284,11 @@ export default function GamePage(props) {
                     >
                         {playerTwoScore}
                     </Avatar>
+                </div>
+                <div className={"bottom-right"}>
+                    <PinkTextTypography variant={"h5"} compact={"h5"}>
+                        {playerTwoName}
+                    </PinkTextTypography>
                 </div>
                 <div className={"center-text"}>
                     <PinkTextTypography variant={"h2"} compact={"h2"}>

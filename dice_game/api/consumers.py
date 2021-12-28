@@ -88,6 +88,8 @@ class GameConsumer(WebsocketConsumer):
                         'player_two_score': self.dice_game.game.player_two_score,
                         'winner': winner,
                         'round': self.dice_game.game.current_round,
+                        'player_one': self.dice_game.game.player_one.username,
+                        'player_two': self.dice_game.game.player_two.username,
                     }
                 }
             )
@@ -108,7 +110,8 @@ class GameConsumer(WebsocketConsumer):
                 'type': 'send_signal',
                 'action': '/start',
                 'additional_data': {
-
+                    'player_one': self.dice_game.game.player_one.username,
+                    'player_two': self.dice_game.game.player_two.username,
                 }
             }
         )

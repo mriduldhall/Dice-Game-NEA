@@ -73,6 +73,18 @@ body {
   max-width: 128px;
 }
 
+.bottom-left {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+}
+
 .score-positioning {
   transform: translate(65%, 100%);
 }
