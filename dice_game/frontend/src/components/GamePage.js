@@ -35,6 +35,8 @@ export default function GamePage(props) {
     let [tempData, setTempData] = useState(null);
     let [playerOneName, setPlayerOneName] = useState(null);
     let [playerTwoName, setPlayerTwoName] = useState(null);
+    let [playerOneLeaderboardPosition, setPlayerOneLeaderboardPosition] = useState(null);
+    let [playerTwoLeaderboardPosition, setPlayerTwoLeaderboardPosition] = useState(null);
     const history = useHistory();
 
     useEffect(
@@ -63,6 +65,8 @@ export default function GamePage(props) {
         setPlayerNumber(data.player_number);
         setPlayerOneName(data.player_one);
         setPlayerTwoName(data.player_two);
+        setPlayerOneLeaderboardPosition(data.player_one_position);
+        setPlayerTwoLeaderboardPosition(data.player_two_position);
     }
 
     function rollDie(data) {
@@ -101,6 +105,8 @@ export default function GamePage(props) {
         setPlayerTwoScore(data.player_two_score);
         setPlayerOneName(data.player_one);
         setPlayerTwoName(data.player_two);
+        setPlayerOneLeaderboardPosition(data.player_one_position);
+        setPlayerTwoLeaderboardPosition(data.player_two_position);
         if (data.winner !== null) {
             setWinner(data.winner);
         }
@@ -254,8 +260,11 @@ export default function GamePage(props) {
                     </Avatar>
                 </div>
                 <div className={"bottom-left"}>
-                    <PinkTextTypography variant={"h5"} compact={"h5"}>
-                        {playerOneName}
+                    <PinkTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
+                        {playerOneName}&nbsp;
+                    </PinkTextTypography>
+                    <PinkTextTypography variant={"h6"} compact={"h6"} display={"inline"}>
+                        ({playerOneLeaderboardPosition})
                     </PinkTextTypography>
                 </div>
                 <div className={"center-right"}>
@@ -286,8 +295,11 @@ export default function GamePage(props) {
                     </Avatar>
                 </div>
                 <div className={"bottom-right"}>
-                    <PinkTextTypography variant={"h5"} compact={"h5"}>
-                        {playerTwoName}
+                    <PinkTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
+                        {playerTwoName}&nbsp;
+                    </PinkTextTypography>
+                    <PinkTextTypography variant={"h6"} compact={"h6"} display={"inline"}>
+                        ({playerTwoLeaderboardPosition})
                     </PinkTextTypography>
                 </div>
                 <div className={"center-text"}>

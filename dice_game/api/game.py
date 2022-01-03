@@ -29,10 +29,16 @@ class DiceGame:
         self.game = game
         self.game.player_two = self.player
         self.game.save(update_fields=["player_two"])
-        return start_game
+        return start_game, self.find_players_leaderboard_position()
 
     def rejoin_game(self, game_id):
         self.game = Game.objects.get(id=game_id)
+        return self.find_players_leaderboard_position()
+
+    def find_players_leaderboard_position(self):
+        player_one_position = User.objects.filter(high_score__gt=self.game.player_one.high_score).count() + 1
+        player_two_position = User.objects.filter(high_score__gt=self.game.player_two.high_score).count() + 1
+        return player_one_position, player_two_position
 
     @staticmethod
     def roll_die():

@@ -65,7 +65,7 @@ class GameConsumer(WebsocketConsumer):
         self.scope["session"].save()
 
     def rejoin_game(self):
-        self.dice_game.rejoin_game(self.scope["session"]["game_id"])
+        player_leaderboard_positions = self.dice_game.rejoin_game(self.scope["session"]["game_id"])
         if self.dice_game.game.player_one.username == self.dice_game.player.username:
             self.scope["session"]["player_number"] = 1
         else:
@@ -90,13 +90,15 @@ class GameConsumer(WebsocketConsumer):
                         'round': self.dice_game.game.current_round,
                         'player_one': self.dice_game.game.player_one.username,
                         'player_two': self.dice_game.game.player_two.username,
+                        'player_one_position': player_leaderboard_positions[0],
+                        'player_two_position': player_leaderboard_positions[1],
                     }
                 }
             )
         self.scope["session"].save()
 
     def connect_to_existing_game(self, game):
-        launch_game = self.dice_game.existing_game(game)
+        launch_game, player_leaderboard_positions = self.dice_game.existing_game(game)
         self.game_name = "game_" + str(self.dice_game.game.id)
         self.scope["session"]["player_number"] = 2
         self.scope["session"]["game_id"] = self.dice_game.game.id
@@ -112,6 +114,8 @@ class GameConsumer(WebsocketConsumer):
                 'additional_data': {
                     'player_one': self.dice_game.game.player_one.username,
                     'player_two': self.dice_game.game.player_two.username,
+                    'player_one_position': player_leaderboard_positions[0],
+                    'player_two_position': player_leaderboard_positions[1],
                 }
             }
         )
