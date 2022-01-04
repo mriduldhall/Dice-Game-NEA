@@ -1,15 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Grid, Typography, Button, ButtonGroup, Chip, Card, withStyles} from "@material-ui/core";
+import {Grid, Button, ButtonGroup, Chip, Card} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
-
-
-const CherryRedTextTypography = withStyles({
-  root: {
-    color: "#f31a4c",
-  }
-})(Typography);
+import {CherryRedTextTypography, BrownCard, NameChip} from "../styles";
 
 
 export default function DashboardPage(props) {
@@ -84,14 +78,13 @@ export default function DashboardPage(props) {
     function renderDashboardPage() {
         return (
             <div>
-                <Chip
+                <NameChip
                     className={"top-right"}
                     label={username}
                     variant={"outlined"}
-                    style={{backgroundColor: "#4A3838BF", fontSize:22, color: "#f31a4c"}}
                 />
                 <div className={"center"}>
-                    <Card style={{backgroundColor: "#442424", padding:10}}>
+                    <BrownCard>
                         <Grid container align={"center"}>
                             {(gameStatus === true) ? renderOngoingGameAlert() : null}
                             <Grid item xs={12} align={"center"}>
@@ -116,7 +109,7 @@ export default function DashboardPage(props) {
                                 </ButtonGroup>
                             </Grid>
                         </Grid>
-                    </Card>
+                    </BrownCard>
                 </div>
             </div>
         );

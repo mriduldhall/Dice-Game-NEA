@@ -5,21 +5,15 @@ import DashboardPage from "./DashboardPage";
 import GamePage from "./GamePage";
 import LeaderboardPage from "./LeaderboardPage";
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
-import {Grid, Typography, Button, ButtonGroup, Card, withStyles} from "@material-ui/core";
-
-
-const CherryRedTextTypography = withStyles({
-  root: {
-    color: "#f31a4c",
-  }
-})(Typography);
+import {Grid, Button, ButtonGroup, Card} from "@material-ui/core";
+import {CherryRedTextTypography, BrownCard} from "../styles";
 
 
 export default function HomePage(props) {
     function renderHomePage() {
         return (
             <div className={"center"}>
-                <Card style={{backgroundColor: "#442424", padding:10}}>
+                <BrownCard>
                     <Grid container align={"center"}>
                         <Grid item xs={12} align={"center"}>
                             <CherryRedTextTypography variant={"h3"} compact={"h3"}>
@@ -40,7 +34,7 @@ export default function HomePage(props) {
                             </ButtonGroup>
                         </Grid>
                     </Grid>
-                </Card>
+                </BrownCard>
             </div>
         );
     }

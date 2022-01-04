@@ -2,22 +2,9 @@ import React, {useState, useEffect, useRef} from "react";
 import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import {Grid, Typography, Button, Avatar, Card, withStyles} from "@material-ui/core";
+import {Grid, Button, Avatar, Card} from "@material-ui/core";
+import {CherryRedTextTypography, PinkTextTypography, BrownCard, ScoreCounter} from "../styles";
 import Dice from "./Dice";
-
-
-const CherryRedTextTypography = withStyles({
-  root: {
-    color: "#f31a4c",
-  }
-})(Typography);
-
-
-const PinkTextTypography = withStyles({
-  root: {
-    color: "#ff00ac",
-  }
-})(Typography);
 
 
 export default function GamePage(props) {
@@ -160,7 +147,7 @@ export default function GamePage(props) {
                         setPauseStatus(false)
                     }}
                 />
-                <Card className={"center"} style={{backgroundColor: "#442424", padding:10}}>
+                <BrownCard className={"center"}>
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Paused
                     </CherryRedTextTypography>
@@ -173,7 +160,7 @@ export default function GamePage(props) {
                         Exit Game
                     </Button>
                 </Grid>
-                </Card>
+                </BrownCard>
             </Grid>
         );
     }
@@ -194,7 +181,7 @@ export default function GamePage(props) {
     function renderEndPage() {
         return (
             <div className={"center game-background"}>
-                <Card className={"center-text"} style={{backgroundColor: "#442424", padding:10}}>
+                <BrownCard className={"center-text"}>
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Winner: Player {winner}
                     </CherryRedTextTypography>
@@ -205,7 +192,7 @@ export default function GamePage(props) {
                     >
                         Return to Main Menu
                     </Button>
-                </Card>
+                </BrownCard>
             </div>
         );
     }
@@ -213,7 +200,7 @@ export default function GamePage(props) {
     function renderConnectingPage() {
         return (
             <div className={"center game-background"}>
-                <Card className={"center-text"} style={{backgroundColor: "#442424", padding:10}}>
+                <BrownCard className={"center-text"}>
                     <CherryRedTextTypography variant={"h3"} compact={"h3"}>
                         Awaiting Second Player...
                     </CherryRedTextTypography>
@@ -224,7 +211,7 @@ export default function GamePage(props) {
                     >
                         Cancel
                     </Button>
-                </Card>
+                </BrownCard>
             </div>
         );
     }
@@ -252,12 +239,11 @@ export default function GamePage(props) {
                     >
                         Roll Die
                     </Button>
-                    <Avatar
-                        style={{backgroundColor: "#000000"}}
+                    <ScoreCounter
                         className={"score-positioning"}
                     >
                         {playerOneScore}
-                    </Avatar>
+                    </ScoreCounter>
                 </div>
                 <div className={"bottom-left"}>
                     <PinkTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
@@ -287,12 +273,11 @@ export default function GamePage(props) {
                     >
                         Roll Die
                     </Button>
-                    <Avatar
-                        style={{backgroundColor: "#000000"}}
+                    <ScoreCounter
                         className={"score-positioning"}
                     >
                         {playerTwoScore}
-                    </Avatar>
+                    </ScoreCounter>
                 </div>
                 <div className={"bottom-right"}>
                     <PinkTextTypography variant={"h5"} compact={"h5"} display={"inline"}>

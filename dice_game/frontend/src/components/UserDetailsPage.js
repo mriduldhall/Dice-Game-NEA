@@ -2,16 +2,10 @@ import React, {useState} from "react";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Lock from "@material-ui/icons/Lock";
 import { Link } from "react-router-dom";
-import {Box, Grid, Typography, FormControl, Button, Collapse, TextField, Card, withStyles} from "@material-ui/core";
+import {Box, Grid, FormControl, Button, Collapse, TextField, Card} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { useHistory } from 'react-router-dom';
-
-
-const CherryRedTextTypography = withStyles({
-  root: {
-    color: "#f31a4c",
-  }
-})(Typography);
+import {BrownCard, CherryRedTextTypography} from "../styles";
 
 
 export default function UserDetailsPage(props) {
@@ -179,7 +173,7 @@ export default function UserDetailsPage(props) {
 
         return(
             <div className={"center"}>
-                <Card style={{backgroundColor: "#442424", padding:10}}>
+                <BrownCard>
                     <Collapse in={errorMsg !== ""}>
                         <Alert
                             severity={"error"}
@@ -209,7 +203,7 @@ export default function UserDetailsPage(props) {
                             renderLoginButtons()
                         }
                     </Grid>
-                </Card>
+                </BrownCard>
             </div>
         );
     }

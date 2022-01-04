@@ -1,13 +1,7 @@
 import React, {useState, useEffect} from "react";
-import {Grid, Card, Typography, Button, ButtonGroup, TableContainer, Table, TableHead, TableRow, TableBody, TableCell, withStyles} from "@material-ui/core";
+import {Grid, Card, Button, ButtonGroup, TableContainer, Table, TableHead, TableRow, TableBody, TableCell} from "@material-ui/core";
 import {Link} from "react-router-dom";
-
-
-const CherryRedTextTypography = withStyles({
-  root: {
-    color: "#f31a4c",
-  }
-})(Typography);
+import {CherryRedTextTypography, BrownCard, LeaderboardBlueTableCell, LeaderboardWhiteTableCell, LeaderboardHeadingTableCell} from "../styles";
 
 
 export default function LeaderboardPage(props) {
@@ -35,9 +29,9 @@ export default function LeaderboardPage(props) {
     function renderPersonalTableRow(row) {
         return (
             <TableRow>
-                <TableCell style={{fontSize:17, color:"#2e83f1"}}><b>{row.position}</b></TableCell>
-                <TableCell style={{fontSize:17, color:"#2e83f1"}}>{row.username}</TableCell>
-                <TableCell style={{fontSize:17, color:"#2e83f1"}}>{row.high_score}</TableCell>
+                <LeaderboardBlueTableCell><b>{row.position}</b></LeaderboardBlueTableCell>
+                <LeaderboardBlueTableCell>{row.username}</LeaderboardBlueTableCell>
+                <LeaderboardBlueTableCell>{row.high_score}</LeaderboardBlueTableCell>
             </TableRow>
         );
     }
@@ -45,9 +39,9 @@ export default function LeaderboardPage(props) {
     function renderRegularTableRow (row, element) {
         return (
             <TableRow key={row.username}>
-                <TableCell style={{fontSize:17, color:"#ffffff"}}><b>{element + 1}</b></TableCell>
-                <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.username}</TableCell>
-                <TableCell style={{fontSize:17, color:"#ffffff"}}>{row.high_score}</TableCell>
+                <LeaderboardWhiteTableCell><b>{element + 1}</b></LeaderboardWhiteTableCell>
+                <LeaderboardWhiteTableCell>{row.username}</LeaderboardWhiteTableCell>
+                <LeaderboardWhiteTableCell>{row.high_score}</LeaderboardWhiteTableCell>
             </TableRow>
         );
     }
@@ -60,8 +54,8 @@ export default function LeaderboardPage(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell/>
-                                <TableCell style={{fontSize:35, color:"#2e83f1"}}>Username</TableCell>
-                                <TableCell style={{fontSize:35, color:"#2e83f1"}}>Score</TableCell>
+                                <LeaderboardHeadingTableCell>Username</LeaderboardHeadingTableCell>
+                                <LeaderboardHeadingTableCell>Score</LeaderboardHeadingTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -78,7 +72,7 @@ export default function LeaderboardPage(props) {
 
     return (
         <div className={"center"}>
-            <Card style={{backgroundColor: "#442424", padding:20, maxHeight:500}}>
+            <BrownCard>
                 <Grid container align={"center"} spacing={1}>
                     <Grid item xs={12} align={"center"}>
                         <CherryRedTextTypography variant={"h3"} compact={"h3"}>
@@ -94,7 +88,7 @@ export default function LeaderboardPage(props) {
                         </ButtonGroup>
                     </Grid>
                 </Grid>
-            </Card>
+            </BrownCard>Z
         </div>
     );
 }
