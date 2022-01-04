@@ -63,6 +63,7 @@ body {
   left: 10%;
   transform: translate(-50%, -50%);
   max-width: 128px;
+  min-width: 128px;
 }
 
 .center-right {
@@ -71,6 +72,7 @@ body {
   left: 90%;
   transform: translate(-50%, -50%);
   max-width: 128px;
+  min-width: 128px;
 }
 
 .bottom-left {
@@ -86,5 +88,7 @@ body {
 }
 
 .score-positioning {
-  transform: translate(65%, 100%);
+  position: absolute;
+  top: 50px;
+  left: 28px;
 }
