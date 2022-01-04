@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Lock from "@material-ui/icons/Lock";
 import { Link } from "react-router-dom";
-import {Box, Grid, FormControl, Button, Collapse, TextField, Card} from "@material-ui/core";
+import {Box, Grid, FormControl, Button, Collapse, TextField} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { useHistory } from 'react-router-dom';
 import {BrownCard, CherryRedTextTypography} from "../styles";

@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from "react";
 import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import {Grid, Button, Avatar, Card} from "@material-ui/core";
+import {Grid, Button} from "@material-ui/core";
 import {CherryRedTextTypography, PinkTextTypography, BrownCard, ScoreCounter} from "../styles";
 import Dice from "./Dice";
 

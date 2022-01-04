@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Grid, Card, Button, ButtonGroup, TableContainer, Table, TableHead, TableRow, TableBody, TableCell} from "@material-ui/core";
+import {Grid, Button, ButtonGroup, TableContainer, Table, TableHead, TableRow, TableBody, TableCell} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import {CherryRedTextTypography, BrownCard, LeaderboardBlueTableCell, LeaderboardWhiteTableCell, LeaderboardHeadingTableCell} from "../styles";
 

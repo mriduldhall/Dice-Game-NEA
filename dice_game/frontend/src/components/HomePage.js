@@ -5,7 +5,7 @@ import DashboardPage from "./DashboardPage";
 import GamePage from "./GamePage";
 import LeaderboardPage from "./LeaderboardPage";
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
-import {Grid, Button, ButtonGroup, Card} from "@material-ui/core";
+import {Grid, Button, ButtonGroup} from "@material-ui/core";
 import {CherryRedTextTypography, BrownCard} from "../styles";
 
 
