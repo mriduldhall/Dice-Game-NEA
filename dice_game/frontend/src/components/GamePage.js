@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import PauseCircleFilled from "@material-ui/icons/PauseCircleFilled";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import {Grid, Button} from "@material-ui/core";
-import {CherryRedTextTypography, PinkTextTypography, BrownCard, ScoreCounter} from "../styles";
+import {CherryRedTextTypography, RedTextTypography, BlueTextTypography, WhiteTextTypography, BrownCard, RedScoreCounter, BlueScoreCounter, RedRollButton, BlueRollButton} from "../styles";
 import Dice from "./Dice";
 
 
@@ -223,9 +223,9 @@ export default function GamePage(props) {
                     <Dice
                         diceValues={playerOneDiceValue}
                         rollDoneCallback={diceRolled}
+                        diceColour={"#ef0e42"}
                     />
-                    <Button
-                        color={"primary"}
+                    <RedRollButton
                         variant={"contained"}
                         onClick={() => {
                             gameSocket.current.send(JSON.stringify({
@@ -238,28 +238,28 @@ export default function GamePage(props) {
                         disabled={(playerNumber !== 1)}
                     >
                         Roll Die
-                    </Button>
-                    <ScoreCounter
+                    </RedRollButton>
+                    <RedScoreCounter
                         className={"score-positioning"}
                     >
                         {playerOneScore}
-                    </ScoreCounter>
+                    </RedScoreCounter>
                 </div>
                 <div className={"bottom-left"}>
-                    <PinkTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
+                    <RedTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
                         {playerOneName}&nbsp;
-                    </PinkTextTypography>
-                    <PinkTextTypography variant={"h6"} compact={"h6"} display={"inline"}>
+                    </RedTextTypography>
+                    <WhiteTextTypography variant={"h6"} compact={"h6"} display={"inline"}>
                         ({playerOneLeaderboardPosition})
-                    </PinkTextTypography>
+                    </WhiteTextTypography>
                 </div>
                 <div className={"center-right"}>
                     <Dice
                         diceValues={playerTwoDiceValue}
                         rollDoneCallback={diceRolled}
+                        diceColour={"#0e77ef"}
                     />
-                    <Button
-                        color={"primary"}
+                    <BlueRollButton
                         variant={"contained"}
                         onClick={() => {
                             gameSocket.current.send(JSON.stringify({
@@ -272,28 +272,28 @@ export default function GamePage(props) {
                         disabled={(playerNumber === 1)}
                     >
                         Roll Die
-                    </Button>
-                    <ScoreCounter
+                    </BlueRollButton>
+                    <BlueScoreCounter
                         className={"score-positioning"}
                     >
                         {playerTwoScore}
-                    </ScoreCounter>
+                    </BlueScoreCounter>
                 </div>
                 <div className={"bottom-right"}>
-                    <PinkTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
+                    <BlueTextTypography variant={"h5"} compact={"h5"} display={"inline"}>
                         {playerTwoName}&nbsp;
-                    </PinkTextTypography>
-                    <PinkTextTypography variant={"h6"} compact={"h6"} display={"inline"}>
+                    </BlueTextTypography>
+                    <WhiteTextTypography variant={"h6"} compact={"h6"} display={"inline"}>
                         ({playerTwoLeaderboardPosition})
-                    </PinkTextTypography>
+                    </WhiteTextTypography>
                 </div>
                 <div className={"center-text"}>
-                    <PinkTextTypography variant={"h2"} compact={"h2"}>
+                    <WhiteTextTypography variant={"h2"} compact={"h2"}>
                         Player {turn}'s Turn
-                    </PinkTextTypography>
-                    <PinkTextTypography variant={"h4"} compact={"h4"}>
+                    </WhiteTextTypography>
+                    <WhiteTextTypography variant={"h4"} compact={"h4"}>
                         Round {round}
-                    </PinkTextTypography>
+                    </WhiteTextTypography>
                 </div>
                 {
                     (pauseStatus === false) ?

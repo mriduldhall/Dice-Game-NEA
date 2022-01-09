@@ -1,4 +1,4 @@
-import {Card, Typography, Chip, Avatar, TableCell, withStyles} from "@material-ui/core";
+import {Card, Typography, Chip, Avatar, Button, TableCell, withStyles} from "@material-ui/core";
 
 
 export const CherryRedTextTypography = withStyles({
@@ -7,10 +7,21 @@ export const CherryRedTextTypography = withStyles({
   }
 })(Typography);
 
-
-export const PinkTextTypography = withStyles({
+export const RedTextTypography = withStyles({
   root: {
-    color: "#ff00ac",
+    color: "#ef0e42",
+  }
+})(Typography);
+
+export const BlueTextTypography = withStyles({
+  root: {
+    color: "#2e83f1",
+  }
+})(Typography);
+
+export const WhiteTextTypography = withStyles({
+  root: {
+    color: "#d2cfcf",
   }
 })(Typography);
 
@@ -29,11 +40,31 @@ export const NameChip = withStyles({
   }
 })(Chip);
 
-export const ScoreCounter = withStyles({
+export const RedScoreCounter = withStyles({
   root: {
-    backgroundColor: "#000000",
+    backgroundColor: "#ef0e42",
   }
 })(Avatar);
+
+export const BlueScoreCounter = withStyles({
+  root: {
+    backgroundColor: "#0e77ef",
+  }
+})(Avatar);
+
+export const RedRollButton = withStyles({
+  root: {
+    color:"#ffffff",
+    backgroundColor: "#ef0e42",
+  }
+})(Button);
+
+export const BlueRollButton = withStyles({
+  root: {
+    color:"#ffffff",
+    backgroundColor: "#0e77ef",
+  }
+})(Button);
 
 export const LeaderboardHeadingTableCell = withStyles({
   root: {

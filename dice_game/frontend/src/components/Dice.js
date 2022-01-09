@@ -18,6 +18,9 @@ export default function Dice(props) {
             <ReactDice
                 numDice={2}
                 disableIndividual={true}
+                faceColor={props.diceColour}
+                dotColor={"#ffffff"}
+                outline={true}
                 rollDone={props.rollDoneCallback}
                 ref={dice => setReactDice(dice)}
             />
@@ -28,5 +31,6 @@ export default function Dice(props) {
 
 Dice.defaultProps = {
     'diceValues': [6, 6],
-    'rollDoneCallback': () => {}
+    'rollDoneCallback': () => {},
+    'diceColour': "",
 }
