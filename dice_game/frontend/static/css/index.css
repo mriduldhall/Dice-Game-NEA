@@ -92,3 +92,20 @@ body {
   top: 50px;
   left: 28px;
 }
+
+.left-overlay {
+  position:absolute;
+  width:30%;
+  height:90%;
+  top: 5%;
+  background:rgba(0,0,0,0.4);
+}
+
+.right-overlay {
+  position:absolute;
+  width:30%;
+  height:90%;
+  top: 5%;
+  right: 0;
+  background:rgba(0,0,0,0.4);
+}

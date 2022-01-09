@@ -300,6 +300,11 @@ export default function GamePage(props) {
                         renderPauseButton():
                         renderPauseMenu()
                 }
+                {
+                    (turn === 1) ?
+                        <div className={"right-overlay"}/>:
+                        <div className={"left-overlay"}/>
+                }
             </div>
         );
     }
